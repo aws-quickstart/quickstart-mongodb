@@ -112,7 +112,7 @@ def qstartlaunch():
     			except Exception as e:
                         	sys.stderr.write("FATAL: Unable to create stack")
 				print 'e', e 
-  				print 'e.error_message', e.error_message 
+				print 'cloudformation error:', e 
         			sys.exit("FATAL:QuickStart Launch [failed]")
 	return stack_ids
 
