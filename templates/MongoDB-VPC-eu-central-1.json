@@ -9,10 +9,10 @@
   },
   {
     "ParameterKey": "AvailabilityZone1",
-    "ParameterValue": "eu-central-1a"
+    "ParameterValue": "eu-central-1b"
   },
   {
     "ParameterKey": "AvailabilityZone2",
-    "ParameterValue": "eu-central-1c"
+    "ParameterValue": "eu-central-1a"
   }
 ]

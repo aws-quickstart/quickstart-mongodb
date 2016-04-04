@@ -5,7 +5,7 @@
   }, 
   {
     "ParameterKey": "AvailabilityZone0",
-    "ParameterValue": "sa-east-1a"
+    "ParameterValue": "sa-east-1c"
   },
   {
     "ParameterKey": "AvailabilityZone1",
