@@ -2,7 +2,8 @@
 #author tonynv@amazon.com
 #This program does launch tests for quickstart cloudformation templates 
 #Test configuration is defined in ci-config.yml
-#Version 3.0
+#If you override regions in test make sure to use yml array
+#Version 3.2
 
 import yaml
 import boto3
@@ -20,7 +21,7 @@ import botocore
 #Configuration Varibles
 yml_configuration="ci-config.yml"
 with open(yml_configuration, 'r') as ciconf:
-    ciyml = yaml.load(ciconf)
+    ciyml = yaml.safe_load(ciconf)
 
 global_qsname=ciyml['global']['qsname']
 global_reporting=ciyml['global']['qsname']
@@ -84,36 +85,40 @@ def cfnvalidate():
 
 def qstartlaunch():
 	stack_ids = []
-	test_regions = ciyml['global']['regions']
 	for test in ciyml['tests'].keys():
                 qstemplate=qss3rooturl +"/templates/"+ str(ciyml['tests'][test]['template_file'])
                 qsparmeterdata= urllib.urlopen(qss3rooturl +"/templates/"+ str(ciyml['tests'][test]['parameter_input']))
 		qsparmeter=json.loads(qsparmeterdata.read())
 		cfcapabilities = []
 		cfcapabilities.append('CAPABILITY_IAM')
-                if 'regions' in  str(ciyml['tests'][test]):
-                        region_override= str(ciyml['tests'][test]['regions'])
+                if 'regions' in ciyml['tests'].get(test) :
+                        region_override= ciyml['tests'][test]['regions']
                         print "********************************************************"
                         print "Overriding regions in test" ":" + str(test) + "with =>" +  str(region_override)
+                        print str(ciyml['tests'][test]['parameter_input'])
                         print "********************************************************"
-                        test_regions=ciyml['tests'][test]['regions']
-		for region in ciyml['global']['regions']:
-			id=str(uuid.uuid4())
-			qsstackname="qsci-"+str(global_qsname)+region+"-"+id[:3]
-			qsstack=qsstackname.replace("_","")
-			print "---------------------------------------------------------"
-                	print "Performing launch tests on  QuickStart project [" + global_qsname +"]"
-                	print "\t Running Test: " + test
-                	print "\t Test Region : " + region
-			# Remove try from cfnconect for full debug
-			try:
-                        	cfnconect= boto3.client('cloudformation',region)
-        			stack_ids.append(cfnconect.create_stack(StackName=qsstack, DisableRollback=True, TemplateURL=qstemplate, Parameters=qsparmeter, Capabilities=cfcapabilities))
-    			except Exception as e:
-                        	sys.stderr.write("FATAL: Unable to create stack")
-				print 'e', e 
-				print 'cloudformation error:', e 
-        			sys.exit("FATAL:QuickStart Launch [failed]")
+			for region in ciyml['tests'][test]['regions']:
+				id=str(uuid.uuid4())
+				qsstackname="qsci-"+str(global_qsname)+region+"-"+id[:3]
+				qsstack=qsstackname.replace("_","")
+				print "---------------------------------------------------------"
+	                	print "Performing launch tests on  QuickStart project [" + global_qsname +"]"
+	                	print "\t Running Test: " + str(test)
+	                	print "\t Test Region : " + str(region)
+	                	print "\t Template file : " + str(qstemplate)
+	                	print "\t Parmeters file : " + str(qss3rooturl +"/templates/"+ str(ciyml['tests'][test]['parameter_input']))
+	                	print "\t Parmeters : " + str(qsparmeter)
+				# Remove try from cfnconect for full debug
+				try:
+	                        	cfnconect= boto3.client('cloudformation',region)
+	        			stack_ids.append(cfnconect.create_stack(StackName=qsstack, DisableRollback=True, TemplateURL=qstemplate, Parameters=qsparmeter, Capabilities=cfcapabilities))
+	    			except Exception as e:
+	                        	sys.stderr.write("FATAL: Unable to create stack")
+					print 'e', e 
+	        			print "FATAL:QuickStart Launch [failed]"
+					print "\t Test Region : " + str(region)
+	                        	print "\t Template file : " + str(qstemplate)
+	                        	print "\t Parmeters : " + str(qsparmeter)
 	return stack_ids
 
 def cfnstackexists(stackname,region):
@@ -250,4 +255,5 @@ if __name__ == "__main__":
 	
   	for stack in stacks:
             cfncleanup(stack['StackId'])
+
 
