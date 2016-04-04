@@ -2,8 +2,8 @@
 #author tonynv@amazon.com
 #This program does launch tests for quickstart cloudformation templates 
 #Test configuration is defined in ci-config.yml
-#If you override regions in test make sure to use yml array
-#Version 3.2
+#If you override global regions in test make sure to use yml array
+#Version 3.5
 
 import yaml
 import boto3
@@ -38,7 +38,8 @@ else:
 #QuickStact Project Root Folder
 qss3root=cis3bucket+"/"+global_qsname
 qss3rooturl=qss3root.replace("s3://", "https://s3.amazonaws.com/")
-table_header="<table width=720 style=\"border:1px solid black;\">"
+html_head="<html>\n <head>\n <meta charset=\"UTF-8\"><title>Automated|Testing Results"+global_qsname+"</title>\n<link rel=\"stylesheet\" href=\"https://s3.amazonaws.com/quickstart-ci-reports/css/style.css\">\n</head>"
+html_body="<body>\n<html lang=en>\n<head>\n<meta charset=utf-8/>\n<meta name=\"viewport\" content=\"initial-scale=1.0; maximum-scale=1.0; width=device-width;\">\n</head>\n<body>\n<table class=\"table-fill\">\n"
 
 # QuickStart Test Framework
 def good_json(jsonparms):
@@ -78,7 +79,7 @@ def cfnvalidate():
 		print "Performing validation json parmeter: " + qsparmeter
 		jsonstatus = good_json(qsparmeterdata.read())
 		if jsonstatus == True:
-			print "PASS: QuickStart Parmeter file for " + test + "is valid [continuting]"
+			print "PASS: QuickStart Parmeter file for " + test + " is valid [continuting]"
 		else:
 			sys.exit("FATAL:QuickStart Parmeter file for " + test + " is not valid [failed test]")
 		print "---------------------------------------------------------"
@@ -119,6 +120,30 @@ def qstartlaunch():
 					print "\t Test Region : " + str(region)
 	                        	print "\t Template file : " + str(qstemplate)
 	                        	print "\t Parmeters : " + str(qsparmeter)
+                else :
+                        for region in ciyml['global']['regions']:
+                                id=str(uuid.uuid4())
+                                qsstackname="qsci-"+str(global_qsname)+"-"+region+"-"+id[:3]
+                                qsstack=qsstackname.replace("_","")
+                                print "---------------------------------------------------------"
+                                print "Performing launch tests on  QuickStart project [" + global_qsname +"]"
+                                print "\t Running Test: " + str(test)
+                                print "\t Test Region : " + str(region)
+                                print "\t Template file : " + str(qstemplate)
+                                print "\t Parmeters file : " + str(qss3rooturl +"/templates/"+ str(ciyml['tests'][test]['parameter_input']))
+                                print "\t Parmeters : " + str(qsparmeter)
+                                # Remove try from cfnconect for full debug
+                                try:
+                                        cfnconect= boto3.client('cloudformation',region)
+                                        stack_ids.append(cfnconect.create_stack(StackName=qsstack, DisableRollback=True, TemplateURL=qstemplate, Parameters=qsparmeter, Capabilities=cfcapabilities))
+                                except Exception as e:
+                                        sys.stderr.write("FATAL: Unable to create stack")
+                                        print 'e', e
+                                        print "FATAL:QuickStart Launch [failed]"
+                                        print "\t Test Region : " + str(region)
+                                        print "\t Template file : " + str(qstemplate)
+                                        print "\t Parmeters : " + str(qsparmeter)
+
 	return stack_ids
 
 def cfnstackexists(stackname,region):
@@ -202,11 +227,11 @@ def qstestreport(stackid):
             status = "USER_DELETED"
         print stackname +"\t"+ region +"\t" + status
 	if status != 'CREATE_COMPLETE':
-		colorstatus="#FF3300"
+		colorstatus="class=\"test-red\""
 	else: 
-		colorstatus="#CCFF99"
+		colorstatus="class=\"test-green\""
 
-	h_file.write("<tr><td>"+stackname+"</td><td>"+region+"</td><td bgcolor="+colorstatus+">"+status+"<td></tr>\n")
+	h_file.write("\n<tr><td class=\"text-left\">"+stackname+"</td><td class=\"text-left\">"+region+"</td><td "+colorstatus+">"+status+"</td></tr>\n")
 
 def cfncleanup(stackid):
         region_re=re.compile('(?<=:)(.\w\-.+(\w*)\-\d)(?=:)')
@@ -231,10 +256,11 @@ if __name__ == "__main__":
     # Start Polling 
     flushfile(reporting_html)
     with open(reporting_html, "a") as h_file:
-	h_file.write(table_header)
-    	h_file.write("<tr><td bgcolor=black style=\"border: 1px solid black;\"><font color=white>QuickStart Test Stack</font></td>\
-		      <td bgcolor=black style=\"border: 1px solid black;\"><font color=white>Tested Region</font></td>\
-		      <td bgcolor=black style=\"border: 1px solid black;\"><font color=white>Test Status</font></td></tr>\n")
+	h_file.write(html_head)
+	h_file.write(html_body)
+    	h_file.write("<thread>\n<tr>\n<th class=\"text-left\">QuickStart Project</th>\n"  
+			+ "<th class=\"text-left\">Tested Region</th>\n"
+			+ "<th class=\"text-left\">Test Results</th></thead>\n<tbody>\n")
 
 	while (active_tests > 0):
            current_active_tests = 0
@@ -249,8 +275,8 @@ if __name__ == "__main__":
     	for stack in stacks:
 	    qstestreport(stack['StackId'])
 
-	h_file.write("<tr><td colspan=3>Tested on: "+ datetime.datetime.now().strftime("%A, %d. %B %Y %I:%M%p") +"</td></tr>")
-	h_file.write("</table>\n")
+	h_file.write("\n<tr>\n<td colspan=3>Tested on: "+ datetime.datetime.now().strftime("%A, %d. %B %Y %I:%M%p") +"</td>\n</tr>\n")
+	h_file.write("</tbody>\n</table>\n</body></body></html>")
 	h_file.close()
 	
   	for stack in stacks:
