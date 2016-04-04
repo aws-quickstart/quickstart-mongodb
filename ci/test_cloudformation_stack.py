@@ -99,7 +99,7 @@ def qstartlaunch():
                         print "********************************************************"
 			for region in ciyml['tests'][test]['regions']:
 				id=str(uuid.uuid4())
-				qsstackname="qsci-"+str(global_qsname)+region+"-"+id[:3]
+				qsstackname="qsci-"+str(global_qsname)+"-"+region+"-"+id[:3]
 				qsstack=qsstackname.replace("_","")
 				print "---------------------------------------------------------"
 	                	print "Performing launch tests on  QuickStart project [" + global_qsname +"]"
@@ -139,7 +139,7 @@ def cfnstackstatus(listofstackdata):
 	for current_test in stack:
 		stackid=stack['StackId']
 		region_re=re.compile('(?<=:)(.\w\-.+(\w*)\-\d)(?=:)')
-		stackname_re=re.compile('qsci.(\w*)-(\w*)-\w{4}')
+		stackname_re=re.compile('qsci.(\w*)-(\w*)-(\w*)-(\d*)-(\w){3}')
 		region=regxfind(region_re,stackid)
 		stackname=regxfind(stackname_re,stackid)
 
@@ -163,7 +163,7 @@ def cfnstackstatus(listofstackdata):
 
 def getteststatus(stackid):
     region_re=re.compile('(?<=:)(.\w\-.+(\w*)\-\d)(?=:)')
-    stackname_re=re.compile('qsci.(\w*)-(\w*)-\w{4}')
+    stackname_re=re.compile('qsci.(\w*)-(\w*)-(\w*)-(\d*)-(\w){3}')
     region=regxfind(region_re,stackid)
     stackname=regxfind(stackname_re,stackid)
     testinfo = []
@@ -189,7 +189,7 @@ def getteststatus(stackid):
 
 def qstestreport(stackid):
         region_re=re.compile('(?<=:)(.\w\-.+(\w*)\-\d)(?=:)')
-        stackname_re=re.compile('qsci.(\w*)-(\w*)-\w{4}')
+	stackname_re=re.compile('qsci.(\w*)-(\w*)-(\w*)-(\d*)-(\w){3}')
         region=regxfind(region_re,stackid)
         stackname=regxfind(stackname_re,stackid)
         cfnconect= boto3.client('cloudformation',region)
@@ -210,7 +210,7 @@ def qstestreport(stackid):
 
 def cfncleanup(stackid):
         region_re=re.compile('(?<=:)(.\w\-.+(\w*)\-\d)(?=:)')
-        stackname_re=re.compile('qsci.(\w*)-(\w*)-\w{4}')
+        stackname_re=re.compile('qsci.(\w*)-(\w*)-(\w*)-(\d*)-(\w){3}')
         region=regxfind(region_re,stackid)
         stackname=regxfind(stackname_re,stackid)
 	still_around=cfnstackexists(stackname,region)
