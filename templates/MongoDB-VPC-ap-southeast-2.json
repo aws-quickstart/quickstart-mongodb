@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "cikey"
+  }, 
+  {
+    "ParameterKey": "AvailabilityZone0",
+    "ParameterValue": "ap-southeast-2a"
+  },
+  {
+    "ParameterKey": "AvailabilityZone1",
+    "ParameterValue": "ap-southeast-2a"
+  },
+  {
+    "ParameterKey": "AvailabilityZone2",
+    "ParameterValue": "ap-southeast-2c"
+  }
+]

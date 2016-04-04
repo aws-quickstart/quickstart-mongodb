@@ -16,9 +16,39 @@ global:
   cis3bucket:  s3://quickstart-ci-bucket
  
 tests:
-  qs_mongodbt1:
-    template_file: qs_mongodb-example1.template
-    parameter_input: qs_mongodb-exampleparms1.json
-  qs_mongodbt2:
-    template_file: qs_mongodb-example2.template
-    parameter_input: qs_mongodb-exampleparms2.json
+  qs_mongod-us-east-1:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-us-east-1.json
+    regions: us-east-1
+  qs_mongod-us-west-1:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-us-west-1.json
+    regions: us-west-1
+  qs_mongod-eu-west-1:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-eu-west-1.json
+    regions: eu-west-1
+  qs_mongod-us-west-2:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-us-west-2.json
+    regions: us-west-2
+  qs_mongod-sa-east-1:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-sa-east-1.json
+    regions: sa-east-1
+  qs_mongod-eu-central-1:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-eu-central-1.json
+    regions: eu-central-1
+  qs_mongod-ap-northeast-1:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-ap-northeast-1.json
+    regions: ap-northeast-1
+  qs_mongod-ap-southeast-1:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-ap-southeast-1.json
+    regions: ap-southeast-1
+  qs_mongod-ap-southeast-2:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-ap-southeast-2.json
+    regions: ap-southeast-2
