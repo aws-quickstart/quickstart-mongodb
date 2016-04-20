@@ -1,11 +1,10 @@
 global:
   qsname: quickstart-mongodb
   reporting: true
+  cis3bucket:  s3://quickstart-ci-bucket
   regions:
     - us-east-1
 
-  cis3bucket:  s3://quickstart-ci-bucket
- 
 tests:
   qs_mongod-us-east-1:
     template_file:  MongoDB-VPC.template
