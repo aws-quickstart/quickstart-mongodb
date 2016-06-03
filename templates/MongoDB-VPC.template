@@ -623,177 +623,50 @@
         }
     },
     "Mappings": {
-        "InstanceTypeArchFromNode": {
-            "m3.medium": {
-                "Arch": "64HVM"
-            },
-            "m3.large": {
-                "Arch": "64HVM"
-            },
-            "m3.xlarge": {
-                "Arch": "64HVM"
-            },
-            "m3.2xlarge": {
-                "Arch": "64HVM"
-            },
-            "c3.large": {
-                "Arch": "64HVM"
-            },
-            "c3.xlarge": {
-                "Arch": "64HVM"
-            },
-            "c3.2xlarge": {
-                "Arch": "64HVM"
-            },
-            "c3.4xlarge": {
-                "Arch": "64HVM"
-            },
-            "c3.8xlarge": {
-                "Arch": "64HVM"
-            },
-            "r3.large": {
-                "Arch": "64HVM"
-            },
-            "r3.xlarge": {
-                "Arch": "64HVM"
-            },
-            "r3.2xlarge": {
-                "Arch": "64HVM"
-            },
-            "r3.4xlarge": {
-                "Arch": "64HVM"
-            },
-            "r3.8xlarge": {
-                "Arch": "64HVM"
-            },
-            "i2.xlarge": {
-                "Arch": "64HVM"
-            },
-            "i2.2xlarge": {
-                "Arch": "64HVM"
-            },
-            "i2.4xlarge": {
-                "Arch": "64HVM"
-            },
-            "i2.8xlarge": {
-                "Arch": "64HVM"
-            }
-        },
-        "AWSNATAMI": {
-            "eu-central-1": {
-                "AMI": "ami-46073a5b"
-            },
-            "sa-east-1": {
-                "AMI": "ami-fbfa41e6"
+        "AWSAMIRegionMap": {
+            "AMI": {
+                "AMZNLINUX": "amzn-ami-hvm-2016.03.1.x86_64-gp2",
+                "AWSNAT": "amzn-ami-vpc-nat-hvm-2016.03.1.x86_64-ebs"
             },
             "ap-northeast-1": {
-                "AMI": "ami-03cf3903"
+                "AMZNLINUX": "ami-29160d47",
+                "AWSNAT": "ami-5d170c33"
             },
-            "eu-west-1": {
-                "AMI": "ami-6975eb1e"
-            },
-            "us-east-1": {
-                "AMI": "ami-303b1458"
-            },
-            "us-west-1": {
-                "AMI": "ami-7da94839"
-            },
-            "us-west-2": {
-                "AMI": "ami-69ae8259"
-            },
-            "ap-southeast-2": {
-                "AMI": "ami-e7ee9edd"
+            "ap-northeast-2": {
+                "AMZNLINUX": "ami-cf32faa1",
+                "AWSNAT": "ami-0d32fa63"
             },
             "ap-southeast-1": {
-                "AMI": "ami-b49dace6"
-            }
-        },
-        "InstanceTypeArch": {
-            "t2.micro": {
-                "Arch": "64HVM"
-            },
-            "m3.medium": {
-                "Arch": "64HVM"
-            },
-            "m3.large": {
-                "Arch": "64HVM"
-            },
-            "m3.xlarge": {
-                "Arch": "64HVM"
-            },
-            "m3.2xlarge": {
-                "Arch": "64HVM"
-            },
-            "c3.large": {
-                "Arch": "64HVM"
-            },
-            "c3.xlarge": {
-                "Arch": "64HVM"
-            },
-            "c3.2xlarge": {
-                "Arch": "64HVM"
-            },
-            "c3.4xlarge": {
-                "Arch": "64HVM"
-            },
-            "c3.8xlarge": {
-                "Arch": "64HVM"
-            },
-            "r3.large": {
-                "Arch": "64HVM"
-            },
-            "r3.xlarge": {
-                "Arch": "64HVM"
-            },
-            "r3.2xlarge": {
-                "Arch": "64HVM"
-            },
-            "r3.4xlarge": {
-                "Arch": "64HVM"
-            },
-            "r3.8xlarge": {
-                "Arch": "64HVM"
-            },
-            "i2.xlarge": {
-                "Arch": "64HVM"
-            },
-            "i2.2xlarge": {
-                "Arch": "64HVM"
-            },
-            "i2.4xlarge": {
-                "Arch": "64HVM"
-            },
-            "i2.8xlarge": {
-                "Arch": "64HVM"
-            }
-        },
-        "AMI": {
-            "eu-west-1": {
-                "64HVM": "ami-bff32ccc"
-            },
-            "ap-southeast-1": {
-                "64HVM": "ami-c9b572aa"
+                "AMZNLINUX": "ami-1ddc0b7e",
+                "AWSNAT": "ami-4ddb0c2e"
             },
             "ap-southeast-2": {
-                "64HVM": "ami-48d38c2b"
+                "AMZNLINUX": "ami-0c95b86f",
+                "AWSNAT": "ami-9094b9f3"
             },
             "eu-central-1": {
-                "64HVM": "ami-bc5b48d0"
+                "AMZNLINUX": "ami-d3c022bc",
+                "AWSNAT": "ami-b2c321dd"
             },
-            "ap-northeast-1": {
-                "64HVM": "ami-383c1956"
-            },
-            "us-east-1": {
-                "64HVM": "ami-60b6c60a"
+            "eu-west-1": {
+                "AMZNLINUX": "ami-b0ac25c3",
+                "AWSNAT": "ami-a2971ed1"
             },
             "sa-east-1": {
-                "64HVM": "ami-6817af04"
+                "AMZNLINUX": "ami-fb890097",
+                "AWSNAT": "ami-a28d04ce"
+            },
+            "us-east-1": {
+                "AMZNLINUX": "ami-f5f41398",
+                "AWSNAT": "ami-bae80fd7"
             },
             "us-west-1": {
-                "64HVM": "ami-d5ea86b5"
+                "AMZNLINUX": "ami-6e84fa0e",
+                "AWSNAT": "ami-3885fb58"
             },
             "us-west-2": {
-                "64HVM": "ami-f0091d91"
+                "AMZNLINUX": "ami-d0f506b0",
+                "AWSNAT": "ami-d3f506b3"
             }
         }
     },
@@ -877,11 +750,11 @@
                 ],
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AWSNATAMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        "AMI"
+                        "AWSNAT"
                     ]
                 }
             }
@@ -1653,19 +1526,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -1857,19 +1722,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -2232,19 +2089,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -2435,19 +2284,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -2809,19 +2650,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -3012,19 +2845,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -3386,19 +3211,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -3589,19 +3406,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -3963,19 +3772,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -4166,19 +3967,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -4540,19 +4333,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -4743,19 +4528,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -5117,19 +4894,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -5320,19 +5089,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -5694,19 +5455,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -5897,19 +5650,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -6271,19 +6016,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -6474,19 +6211,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -6848,19 +6577,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -7051,19 +6772,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -7425,19 +7138,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -7628,19 +7333,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -8002,19 +7699,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -8205,19 +7894,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -8559,19 +8240,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -8863,19 +8536,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
@@ -9167,19 +8832,11 @@
                 },
                 "ImageId": {
                     "Fn::FindInMap": [
-                        "AMI",
+                        "AWSAMIRegionMap",
                         {
                             "Ref": "AWS::Region"
                         },
-                        {
-                            "Fn::FindInMap": [
-                                "InstanceTypeArch",
-                                {
-                                    "Ref": "NodeInstanceType"
-                                },
-                                "Arch"
-                            ]
-                        }
+                        "AMZNLINUX"
                     ]
                 },
                 "IamInstanceProfile": {
