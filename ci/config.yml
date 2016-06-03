@@ -41,6 +41,11 @@ tests:
     parameter_input: MongoDB-VPC-ap-northeast-1.json
     regions:
     - ap-northeast-1
+  qs_mongod-ap-northeast-2:
+    template_file:  MongoDB-VPC.template
+    parameter_input: MongoDB-VPC-ap-northeast-2.json
+    regions:
+    - ap-northeast-2
   qs_mongod-ap-southeast-1:
     template_file:  MongoDB-VPC.template
     parameter_input: MongoDB-VPC-ap-southeast-1.json
