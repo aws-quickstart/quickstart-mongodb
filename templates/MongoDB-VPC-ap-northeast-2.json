@@ -9,7 +9,7 @@
   },
   {
     "ParameterKey": "AvailabilityZone1",
-    "ParameterValue": "ap-northeast-2a"
+    "ParameterValue": "ap-northeast-2c"
   },
   {
     "ParameterKey": "AvailabilityZone2",
