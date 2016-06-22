@@ -594,37 +594,37 @@
     "Mappings": {
         "AWSAMIRegionMap": {
             "AMI": {
-                "AMZNLINUX": "amzn-ami-hvm-2016.03.1.x86_64-gp2"
+                "AMZNLINUX": "amzn-ami-hvm-2016.03.2.x86_64-gp2"
             },
             "ap-northeast-1": {
-                "AMZNLINUX": "ami-29160d47"
+                "AMZNLINUX": "ami-6154bb00"
             },
             "ap-northeast-2": {
-                "AMZNLINUX": "ami-cf32faa1"
+                "AMZNLINUX": "ami-69e92207"
             },
             "ap-southeast-1": {
-                "AMZNLINUX": "ami-1ddc0b7e"
+                "AMZNLINUX": "ami-a2c111c1"
             },
             "ap-southeast-2": {
-                "AMZNLINUX": "ami-0c95b86f"
+                "AMZNLINUX": "ami-d9d7f9ba"
             },
             "eu-central-1": {
-                "AMZNLINUX": "ami-d3c022bc"
+                "AMZNLINUX": "ami-7df01e12"
             },
             "eu-west-1": {
-                "AMZNLINUX": "ami-b0ac25c3"
+                "AMZNLINUX": "ami-c39604b0"
             },
             "sa-east-1": {
-                "AMZNLINUX": "ami-fb890097"
+                "AMZNLINUX": "ami-106ee57c"
             },
             "us-east-1": {
-                "AMZNLINUX": "ami-f5f41398"
+                "AMZNLINUX": "ami-a4827dc9"
             },
             "us-west-1": {
-                "AMZNLINUX": "ami-6e84fa0e"
+                "AMZNLINUX": "ami-11790371"
             },
             "us-west-2": {
-                "AMZNLINUX": "ami-d0f506b0"
+                "AMZNLINUX": "ami-f303fb93"
             }
         }
     },
