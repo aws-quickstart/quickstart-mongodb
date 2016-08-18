@@ -8,6 +8,10 @@
     "ParameterValue": "sa-east-1c"
   },
   {
+    "ParameterKey": "NodeInstanceType",
+    "ParameterValue": "m3.medium"
+  },
+  {
     "ParameterKey": "AvailabilityZone1",
     "ParameterValue": "sa-east-1b"
   },
