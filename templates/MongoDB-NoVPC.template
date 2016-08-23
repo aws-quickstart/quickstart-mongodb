@@ -43,7 +43,7 @@
         "ShardsPerNode": {
             "Description": "Number of Micro Shards Per Node",
             "Type": "String",
-            "Default": "1",
+            "Default": "0",
             "AllowedValues": [
                 "0",
                 "1",
