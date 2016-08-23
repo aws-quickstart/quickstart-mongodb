@@ -34,7 +34,7 @@
         "MongoDBVersion": {
             "Description": "MongoDB version",
             "Type": "String",
-            "Default": "2.6",
+            "Default": "3.0",
             "AllowedValues": [
                 "3.0",
                 "2.6"
