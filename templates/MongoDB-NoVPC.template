@@ -23,11 +23,10 @@
             ]
         },
         "RemoteAccessCIDR": {
-            "Description": "IP CIDR from where you could SSH into MongoDB cluster via NAT",
+            "Description": "IP CIDR from where you could SSH into MongoDB cluster via NAT Note: a value of 0.0.0.0/0 will allow access from ANY ip address",
             "Type": "String",
             "MinLength": "9",
             "MaxLength": "18",
-            "Default": "0.0.0.0/0",
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
             "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x."
         },

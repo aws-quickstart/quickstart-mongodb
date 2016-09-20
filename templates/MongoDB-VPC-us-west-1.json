@@ -4,6 +4,10 @@
     "ParameterValue": "cikey"
   }, 
   {
+    "ParameterKey": "RemoteAccessCIDR",
+    "ParameterValue": "10.0.0.0/16"
+  },  
+  {
     "ParameterKey": "AvailabilityZone0",
     "ParameterValue": "us-west-1a"
   },
