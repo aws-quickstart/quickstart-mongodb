@@ -31,21 +31,20 @@ getValue() {
 version=${MongoDBVersion}
 
 if [ -z "$version" ] ; then
-  version="3.0"
+  version="3.4"
 fi
 
-if [ "${version}" == "3.0" ]; then
-    echo "[mongodb-org-${version}]
-name=MongoDB Repository
-baseurl=http://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/3.0/x86_64/
-gpgcheck=0
-enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
-
-
-else
+if [ "${version}" == "2.6" ]; then
     echo "[mongodb-org-${version}]
 name=MongoDB 2.6 Repository
 baseurl=http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/
+gpgcheck=0
+enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
+
+else
+    echo "[mongodb-org-${version}]
+name=MongoDB Repository
+baseurl=http://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/${version}/x86_64/
 gpgcheck=0
 enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
 
