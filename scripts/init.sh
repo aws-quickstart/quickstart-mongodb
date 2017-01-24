@@ -31,7 +31,7 @@ getValue() {
 version=${MongoDBVersion}
 
 if [ -z "$version" ] ; then
-  version="3.4"
+  version="3.2"
 fi
 
 if [ "${version}" == "2.6" ]; then
