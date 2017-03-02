@@ -1,0 +1,737 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Deploy MongoDB on a New VPC in AWS",
+    "Metadata": {
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {
+                        "default": "Network Configuration"
+                    },
+                    "Parameters": [
+                        "AvailabilityZones",
+                        "NumberOfAZs",
+                        "VPCCIDR",
+                        "PrivateSubnet1CIDR",
+                        "PrivateSubnet2CIDR",
+                        "PrivateSubnet3CIDR",
+                        "PublicSubnet1CIDR",
+                        "PublicSubnet2CIDR",
+                        "PublicSubnet3CIDR",
+                        "RemoteAccessCIDR"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Security Configuration"
+                    },
+                    "Parameters": [
+                        "KeyPairName"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Linux Bastion Amazon EC2 Configuration"
+                    },
+                    "Parameters": [
+                        "NATInstanceType",
+                        "BastionAMIOS",
+                        "Bastion1InstanceType",
+                        "Bastion1PrivateIP",
+                        "Bastion2InstanceType",
+                        "Bastion2PrivateIP",
+                        "PrimaryIPAddress",
+                        "StandbyIPAddress",
+                        "EnableBanner",
+                        "BastionBanner"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "MongoDB Database Configuration"
+                    },
+                    "Parameters": [
+						"ClusterReplicaSetCount",
+						"ClusterShardCount",
+						"ConfigServerInstanceType",
+						"Iops",
+						"MongoDBVersion",
+						"NodeInstanceType",
+						"ShardsPerNode",
+						"VolumeSize",
+						"VolumeType"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "AWS Quick Start Configuration"
+                    },
+                    "Parameters": [
+                        "QSS3BucketName",
+                        "QSS3KeyPrefix"
+                    ]
+                }
+            ]
+        }
+    },
+    "Parameters": {
+		"PrivateSubnet2CIDR": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+		    "Default": "10.0.32.0/19",
+		    "Type": "String",
+		    "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+		    "Description": "CIDR block for private subnet 2 located in Availability Zone 2."
+		},
+  		"PrivateSubnet3CIDR": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+		    "Default": "10.0.64.0/19",
+		    "Type": "String",
+		    "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+		    "Description": "CIDR block for private subnet 3 located in Availability Zone 3."
+		},
+		"Bastion2PrivateIP": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
+		    "Default": "10.0.144.5",
+		    "Type": "String",
+		    "ConstraintDescription": "IP address parameter must be in the form x.x.x.x",
+		    "Description": "Fixed private IP for the second bastion located in Availability Zone 2"
+		},
+		"NATInstanceType": {
+		    "Default": "t2.small",
+		    "Type": "String",
+		    "Description": "Amazon EC2 instance type for the NAT Instances. This is only used if the region does not support NAT gateways.",
+		    "AllowedValues": [
+		        "t2.nano",
+		        "t2.micro",
+		        "t2.small",
+		        "t2.medium",
+		        "t2.large",
+		        "m3.medium",
+		        "m3.large",
+		        "m4.large"
+		    ]
+		},
+		"QSS3BucketName": {
+		    "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
+		    "Default": "cftests",
+		    "Type": "String",
+		    "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+		    "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+		},
+		"PublicSubnet2CIDR": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+		    "Default": "10.0.144.0/20",
+		    "Type": "String",
+		    "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+		    "Description": "CIDR Block for the public DMZ subnet 2 located in Availability Zone 2"
+		},
+  		"PublicSubnet3CIDR": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+		    "Default": "10.0.160.0/20",
+		    "Type": "String",
+		    "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+		    "Description": "CIDR Block for the public DMZ subnet 3 located in Availability Zone 3"
+		},
+		"KeyPairName": {
+		    "Type": "AWS::EC2::KeyPair::KeyName",
+		    "Description": "Public/private key pairs allow you to securely connect to your instance after it launches"
+		},
+		"PublicSubnet1CIDR": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+		    "Default": "10.0.128.0/20",
+		    "Type": "String",
+		    "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+		    "Description": "CIDR Block for the public DMZ subnet 1 located in Availability Zone 1"
+		},
+		"BastionAMIOS": {
+		    "Default": "AmazonLinuxHVM",
+		    "Type": "String",
+		    "Description": "The Linux distribution for the AMI to be used for the bastion instances",
+		    "AllowedValues": [
+		        "AmazonLinuxHVM",
+		        "CentOS7HVM",
+		        "UbuntuServer1404LTSHVM"
+		    ]
+		},
+		"EnableBanner": {
+		    "Default": "true",
+		    "Type": "String",
+		    "Description": "To include a banner to be displayed when connecting via SSH to the bastion, set this parameter to true",
+		    "AllowedValues": [
+		        "true",
+		        "false"
+		    ]
+		},
+        "BastionBanner": {
+            "Default": "https://s3.amazonaws.com/quickstart-reference/linux/bastion/latest/scripts/banner_message.txt",
+            "Description": "Banner text to display upon login",
+            "Type": "String"
+        },
+		"RemoteAccessCIDR": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$",
+		    "Type": "String",
+		    "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/x",
+		    "Description": "Allowed CIDR block for external SSH access to the bastions"
+		},
+		"PrivateSubnet1CIDR": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+		    "Default": "10.0.0.0/19",
+		    "Type": "String",
+		    "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+		    "Description": "CIDR block for private subnet 1 located in Availability Zone 1."
+		},
+		"PrimaryIPAddress": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
+		    "Default": "10.0.0.5",
+		    "Type": "String",
+		    "ConstraintDescription": "IP address parameter must be in the form x.x.x.x",
+		    "Description": "This must be a valid IP address for private subnet 1."
+		},
+		"Bastion2InstanceType": {
+		    "Default": "t2.micro",
+		    "Type": "String",
+		    "Description": "Amazon EC2 instance type for the second bastion instance",
+		    "AllowedValues": [
+		        "t2.nano",
+		        "t2.micro",
+		        "t2.small",
+		        "t2.medium",
+		        "t2.large",
+		        "m3.large",
+		        "m3.xlarge",
+		        "m3.2xlarge",
+		        "m4.large",
+		        "m4.xlarge",
+		        "m4.2xlarge",
+		        "m4.4xlarge"
+		    ]
+		},
+		"Bastion1PrivateIP": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
+		    "Default": "10.0.128.5",
+		    "Type": "String",
+		    "ConstraintDescription": "IP address parameter must be in the form x.x.x.x",
+		    "Description": "Fixed private IP for the first bastion located in Availability Zone 1"
+		},
+		"VPCCIDR": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$",
+		    "Default": "10.0.0.0/16",
+		    "Type": "String",
+		    "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
+		    "Description": "CIDR Block for the VPC"
+		},
+		"QSS3KeyPrefix": {
+		    "AllowedPattern": "^[0-9a-zA-Z-]+(/[0-9a-zA-Z-]+)*$",
+		    "Default": "mongodb/latest",
+		    "Type": "String",
+		    "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with forward slash (/) because they are automatically appended.",
+		    "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with forward slash (/) because they are automatically appended."
+		},
+		"Bastion1InstanceType": {
+		    "Default": "t2.micro",
+		    "Type": "String",
+		    "Description": "Amazon EC2 instance type for the first bastion instance",
+		    "AllowedValues": [
+		        "t2.nano",
+		        "t2.micro",
+		        "t2.small",
+		        "t2.medium",
+		        "t2.large",
+		        "m3.large",
+		        "m3.xlarge",
+		        "m3.2xlarge",
+		        "m4.large",
+		        "m4.xlarge",
+		        "m4.2xlarge",
+		        "m4.4xlarge"
+		    ]
+		},
+		"AvailabilityZones": {
+		    "Type": "List<AWS::EC2::AvailabilityZone::Name>",
+		    "Description": "List of Availability Zones to use for the subnets in the VPC. Note: The logical order is preserved. 1 or 3 AZs are used for this deployment."
+		},
+        "NumberOfAZs": {
+            "AllowedValues": [
+                "2",
+                "3",
+                "4"
+            ],
+            "Default": "3",
+            "Description": "Number of Availability Zones to use in the VPC. This must match your selections in the list of Availability Zones parameter.",
+            "Type": "String"
+        },
+		"StandbyIPAddress": {
+		    "AllowedPattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$",
+		    "Default": "10.0.32.5",
+		    "Type": "String",
+		    "ConstraintDescription": "IP address parameter must be in the form x.x.x.x",
+		    "Description": "This must be a valid IP address for private subnet 2."
+		},
+	    "NodeInstanceType": {
+	        "Default": "m4.large",
+	        "Type": "String",
+	        "Description": "Amazon EC2 instance type for the MongoDB nodes.",
+	        "AllowedValues": [
+	            "m3.medium",
+	            "m3.large",
+	            "m3.xlarge",
+	            "m3.2xlarge",
+	            "m4.large",
+	            "m4.2xlarge",
+	            "m4.4xlarge",
+	            "m4.10xlarge",
+	            "c3.large",
+	            "c3.xlarge",
+	            "c3.2xlarge",
+	            "c3.4xlarge",
+	            "c3.8xlarge",
+	            "r3.large",
+	            "r3.xlarge",
+	            "r3.2xlarge",
+	            "r3.4xlarge",
+	            "r3.8xlarge",
+	            "i2.xlarge",
+	            "i2.2xlarge",
+	            "i2.4xlarge",
+	            "i2.8xlarge"
+	        ]
+	    },
+	    "VolumeSize": {
+	        "Default": "400",
+	        "Type": "String",
+	        "Description": "EBS Volume Size (data) to be attached to node in GBs"
+	    },
+	    "VolumeType": {
+	        "Default": "gp2",
+	        "Type": "String",
+	        "Description": "EBS Volume Type (data) to be attached to node in GBs [io1,gp2]",
+	        "AllowedValues": [
+	            "gp2",
+	            "io1"
+	        ]
+	    },
+	    "MongoDBVersion": {
+	        "Default": "3.2",
+	        "Type": "String",
+	        "Description": "MongoDB version",
+	        "AllowedValues": [
+	            "3.2",
+	            "3.0",
+	            "2.6"
+	        ]
+	    },
+	    "ClusterReplicaSetCount": {
+	        "Default": "1",
+	        "Type": "String",
+	        "Description": "Number of Replica Set Members. Choose 1 or 3",
+	        "AllowedValues": [
+	            "1",
+	            "3"
+	        ]
+	    },
+	    "ClusterShardCount": {
+	        "Default": "0",
+	        "Type": "String",
+	        "Description": "Number of Shards [0,1,2,3]. 0==No Sharding. Set to > 1 for Sharding",
+	        "AllowedValues": [
+	            "0",
+	            "1",
+	            "2",
+	            "3"
+	        ]
+	    },
+	    "ShardsPerNode": {
+	        "Default": "0",
+	        "Type": "String",
+	        "Description": "Number of Micro Shards Per Node",
+	        "AllowedValues": [
+	            "0",
+	            "1",
+	            "2",
+	            "3",
+	            "4",
+	            "5",
+	            "6",
+	            "7",
+	            "8",
+	            "9",
+	            "10",
+	            "11",
+	            "12",
+	            "13",
+	            "14",
+	            "15",
+	            "16"
+	        ]
+	    },
+	    "ConfigServerInstanceType": {
+	        "Default": "t2.micro",
+	        "Type": "String",
+	        "Description": "Amazon EC2 instance type for the Config Server",
+	        "AllowedValues": [
+	            "t2.micro",
+	            "m3.medium",
+	            "m3.large",
+	            "m3.xlarge",
+	            "m3.2xlarge",
+	            "m4.large",
+	            "m4.2xlarge",
+	            "m4.4xlarge",
+	            "m4.10xlarge",
+	            "c3.large",
+	            "c3.xlarge",
+	            "c3.2xlarge",
+	            "c3.4xlarge",
+	            "c3.8xlarge",
+	            "r3.large",
+	            "r3.xlarge",
+	            "r3.2xlarge",
+	            "r3.4xlarge",
+	            "r3.8xlarge",
+	            "i2.xlarge",
+	            "i2.2xlarge",
+	            "i2.4xlarge",
+	            "i2.8xlarge"
+	        ]
+	    },
+	    "Iops": {
+	        "Default": "100",
+	        "Type": "String",
+	        "Description": "Iops of EBS volume when io1 type is chosen. Otherwise ignored"
+	    },
+	    "RemoteAccessCIDR": {
+	        "Type": "String",
+	        "Description": "IP CIDR from where you could SSH into MongoDB cluster via NAT Note: a value of 0.0.0.0/0 will allow access from ANY ip address",
+	        "MinLength": "9",
+	        "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+	        "MaxLength": "18",
+	        "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x."
+	    }
+	},
+    "Conditions": { },
+    "Mappings": {
+        "AWSInfoRegionMap": {
+            "ap-northeast-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "ap-northeast-2": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "ap-south-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "ap-southeast-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "ap-southeast-2": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "ca-central-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "eu-central-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "eu-west-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "eu-west-2": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "sa-east-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "us-east-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "us-east-2": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "us-gov-west-1": {
+                "Partition": "aws-us-gov",
+                "QuickStartS3URL": "https://s3-us-gov-west-1.amazonaws.com"
+            },
+            "us-west-1": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            },
+            "us-west-2": {
+                "Partition": "aws",
+                "QuickStartS3URL": "https://s3.amazonaws.com"
+            }
+        }
+    },
+    "Resources" : {
+            "VPCStack": {
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {
+                    "Fn::Join": [
+                        "/",
+                        [
+                            {
+                                "Fn::FindInMap": [
+                                    "AWSInfoRegionMap",
+                                    {
+                                        "Ref": "AWS::Region"
+                                    },
+                                    "QuickStartS3URL"
+                                ]
+                            },
+                            {
+                                "Ref": "QSS3BucketName"
+                            },
+                            {
+                                "Ref": "QSS3KeyPrefix"
+                            },
+                            "submodules/quickstart-aws-vpc",
+                            "templates/aws-vpc.template"
+                        ]
+                    ]
+                },
+                "Parameters": {
+                    "AvailabilityZones": {
+                        "Fn::Join": [
+                            ",",
+                            {
+                                "Ref": "AvailabilityZones"
+                            }
+                        ]
+                    },
+                    "KeyPairName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "NATInstanceType": {
+                        "Ref": "NATInstanceType"
+                    },
+                    "NumberOfAZs": "3",
+                    "PrivateSubnet1ACIDR": {
+                        "Ref": "PrivateSubnet1CIDR"
+                    },
+                    "PrivateSubnet2ACIDR": {
+                        "Ref": "PrivateSubnet2CIDR"
+                    },
+                    "PrivateSubnet3ACIDR": {
+                        "Ref": "PrivateSubnet3CIDR"
+                    },
+                    "PublicSubnet1CIDR": {
+                        "Ref": "PublicSubnet1CIDR"
+                    },
+                    "PublicSubnet2CIDR": {
+                        "Ref": "PublicSubnet2CIDR"
+                    },
+                    "PublicSubnet3CIDR": {
+                        "Ref": "PublicSubnet3CIDR"
+                    },
+                    "VPCCIDR": {
+                        "Ref": "VPCCIDR"
+                    }
+                }
+            }
+        },
+        "BastionStack": {
+            "DependsOn": "VPCStack",
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+                "TemplateURL": {
+                    "Fn::Join": [
+                        "/",
+                        [
+                            {
+                                "Fn::FindInMap": [
+                                    "AWSInfoRegionMap",
+                                    {
+                                        "Ref": "AWS::Region"
+                                    },
+                                    "QuickStartS3URL"
+                                ]
+                            },
+                            {
+                                "Ref": "QSS3BucketName"
+                            },
+                            {
+                                "Ref": "QSS3KeyPrefix"
+                            },
+                            "submodules/quickstart-linux-bastion",
+                            "templates/linux-bastion.template"
+                        ]
+                    ]
+                },
+                "Parameters": {
+                    "Bastion1InstanceType": {
+                        "Ref": "Bastion1InstanceType"
+                    },
+                    "Bastion1PrivateIP": {
+                        "Ref": "Bastion1PrivateIP"
+                    },
+                    "Bastion2InstanceType": {
+                        "Ref": "Bastion2InstanceType"
+                    },
+                    "Bastion2PrivateIP": {
+                        "Ref": "Bastion2PrivateIP"
+                    },
+                    "BastionAMIOS": {
+                        "Ref": "BastionAMIOS"
+                    },
+                    "BastionBanner": {
+                        "Ref": "BastionBanner"
+                    },
+                    "EnableBanner": {
+                        "Ref": "EnableBanner"
+                    },
+                    "KeyPairName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "PublicSubnet1ID": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.PublicSubnet1ID"
+                        ]
+                    },
+                    "PublicSubnet2ID": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.PublicSubnet2ID"
+                        ]
+                    },
+                    "QSS3BucketName": {
+                        "Ref": "QSS3BucketName"
+                    },
+                    "QSS3KeyPrefix": {
+                        "Fn::Join": [
+                            "/",
+                            [
+                                {
+                                    "Ref": "QSS3KeyPrefix"
+                                },
+                                "submodules/quickstart-linux-bastion"
+                            ]
+                        ]
+                    },
+                    "RemoteAccessCIDR": {
+                        "Ref": "RemoteAccessCIDR"
+                    },
+                    "VPCID": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.VPCID"
+                        ]
+                    }
+                }
+            }
+        },
+        "MongoDBStack": {
+            "DependsOn": "BastionStack",
+            "Type": "AWS::CloudFormation::Stack",
+            "Properties": {
+            	"TemplateURL": {
+                	"Fn::Join": [
+                    	"/",
+                        [
+                            {
+                                "Fn::FindInMap": [
+                                    "AWSInfoRegionMap",
+                                    {
+                                        "Ref": "AWS::Region"
+                                    },
+                                    "QuickStartS3URL"
+                                ]
+                            },
+                            {
+                                "Ref": "QSS3BucketName"
+                            },
+                            {
+                                "Ref": "QSS3KeyPrefix"
+                            },
+                            "templates/MongoDB-NoVPC.template"
+                        ]
+                    ]
+                },
+                "Parameters": {
+                    "BuildBucket": {
+                      "Fn::Join": [
+                          "/",
+                            [
+                                {
+                                    "Ref": "QSS3BucketName"
+                                },
+                                {
+                                    "Ref": "QSS3KeyPrefix"
+                                }
+                            ]
+                        ]
+                    },
+                    "ClusterReplicaSetCount": {
+                        "Ref": "ClusterReplicaSetCount"
+                    },
+                    "ClusterShardCount": {
+                        "Ref": "ClusterShardCount"
+                    },
+                    "ConfigServerInstanceType": {
+                        "Ref": "ConfigServerInstanceType"
+                    },
+                    "Iops": {
+                        "Ref": "Iops"
+                    },
+                    "KeyName": {
+                        "Ref": "KeyPairName"
+                    },
+                    "MongoDBVersion": {
+                        "Ref": "MongoDBVersion"
+                    },
+                    "NodeInstanceType": {
+                        "Ref": "NodeInstanceType"
+                    },
+                    "PrimaryNodeSubnet": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.PrivateSubnet1AID"
+                        ]
+                    },
+                    "RemoteAccessCIDR": {
+                        "Ref": "RemoteAccessCIDR"
+                    },
+                    "Secondary0NodeSubnet": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.PrivateSubnet2AID"
+                        ]
+                    },
+                    "Secondary1NodeSubnet": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.PrivateSubnet3AID"
+                        ]
+                    },
+                    "ShardsPerNode": {
+                        "Ref": "ShardsPerNode"
+                    },
+                    "VPC": {
+                        "Fn::GetAtt": [
+                            "VPCStack",
+                            "Outputs.VPCID"
+                        ]
+                    },
+                    "VolumeSize": {
+                        "Ref": "VolumeSize"
+                    },
+                    "VolumeType": {
+                        "Ref": "VolumeType"
+                    }
+                }
+            }
+        }
+    }
+}
