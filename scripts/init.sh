@@ -403,11 +403,49 @@ EOF
         # Configure the replica sets, set this host as Primary with
         # highest priority
         #################################################################
-        port=27018
-        c=0
-        while [ $c -lt ${MICROSHARDS} ]; do
+        if [ ${MICROSHARDS} -gt 0 ]; then
+            port=27018
+            c=0
+            while [ $c -lt ${MICROSHARDS} ]; do
 
-            conf="{\"_id\" : \"${SHARD}-rs${c}\", \"version\" : 1, \"members\" : ["
+                conf="{\"_id\" : \"${SHARD}-rs${c}\", \"version\" : 1, \"members\" : ["
+                node=1
+                for addr in "${IPADDRS[@]}"
+                do
+                    addr="${addr%\"}"
+                    addr="${addr#\"}"
+
+                    priority=5
+                    if [ "${addr}" == "${IP}" ]; then
+                        priority=10
+                    fi
+                    conf="${conf}{\"_id\" : ${node}, \"host\" :\"${addr}:${port}\", \"priority\":${priority}}"
+
+                    if [ $node -lt ${NODES} ]; then
+                        conf=${conf}","
+                    fi
+
+                    (( node++ ))
+                done
+
+                conf=${conf}"]}"
+                echo ${conf}
+
+mongo --port ${port} << EOF
+rs.initiate(${conf})
+EOF
+
+                if [ $? -ne 0 ]; then
+                    # Houston, we've had a problem here...
+                    ./signalFinalStatus.sh 1
+                fi
+
+                (( port++ ))
+                (( c++ ))
+            done
+        elif [ "${NODES}" == "3" ]; then
+            port=27017
+            conf="{\"_id\" : \"${SHARD}\", \"version\" : 1, \"members\" : ["
             node=1
             for addr in "${IPADDRS[@]}"
             do
@@ -434,14 +472,11 @@ mongo --port ${port} << EOF
 rs.initiate(${conf})
 EOF
 
-        if [ $? -ne 0 ]; then
-            # Houston, we've had a problem here...
-            ./signalFinalStatus.sh 1
+            if [ $? -ne 0 ]; then
+                # Houston, we've had a problem here...
+                ./signalFinalStatus.sh 1
+            fi
         fi
-
-            (( port++ ))
-            (( c++ ))
-        done
 
         if [ ${SHARDCOUNT} -gt 0 ]; then
             #################################################################
