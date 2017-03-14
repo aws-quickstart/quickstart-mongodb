@@ -408,7 +408,28 @@
 	        "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x."
 	    }
 	},
-    "Conditions": { },
+    "Conditions": {
+		"CreateNoShard": {
+			"Fn::Equals": [
+				{
+					"Ref": "ClusterShardCount"
+				},
+				"0"
+			]
+		},
+		"CreateMinOneShard": {
+			"Fn::Not": [
+				{
+					"Fn::Equals": [
+						{
+							"Ref": "ClusterShardCount"
+						},
+						"0"
+					]
+				}
+			]
+		}
+	},
     "Mappings": {
         "AWSInfoRegionMap": {
             "ap-northeast-1": {
@@ -655,7 +676,13 @@
                             {
                                 "Ref": "QSS3KeyPrefix"
                             },
-                            "templates/MongoDB-NoVPC.template"
+                            {
+                                "Fn::If": [
+                                    "CreateNoShard",
+                                    "templates/mongodb-database.template",
+                                    "templates/mongodb-database-sharded.template"
+                                ]
+                            }
                         ]
                     ]
                 },

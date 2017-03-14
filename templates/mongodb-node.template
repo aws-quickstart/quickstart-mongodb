@@ -1,0 +1,549 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "This template is used for setting up a single mongodb node",
+    "Parameters": {
+        "VPC": {
+            "Type": "AWS::EC2::VPC::Id",
+            "Description": "VPC-ID of your existing Virtual Private Cloud (VPC) where you want to depoy MongoDB cluster.",
+            "AllowedPattern": "vpc-[0-9a-z]{8}"
+        },
+        "RemoteAccessCIDR": {
+            "Description": "IP CIDR from where you could SSH into MongoDB cluster via NAT Note: a value of 0.0.0.0/0 will allow access from ANY ip address",
+            "Type": "String",
+            "MinLength": "9",
+            "MaxLength": "18",
+            "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+            "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x."
+        },
+        "NodeSubnet": {
+            "Description": "Subnet Id",
+            "Type": "String"
+        },
+        "NodeInstanceType": {
+            "Description": "Amazon EC2 instance type for the MongoDB nodes.",
+            "Type": "String",
+            "Default": "m4.large",
+            "AllowedValues": [
+                "m3.medium",
+                "m3.large",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "m4.large",
+                "m4.2xlarge",
+                "m4.4xlarge",
+                "m4.10xlarge",
+                "c3.large",
+                "c3.xlarge",
+                "c3.2xlarge",
+                "c3.4xlarge",
+                "c3.8xlarge",
+                "r3.large",
+                "r3.xlarge",
+                "r3.2xlarge",
+                "r3.4xlarge",
+                "r3.8xlarge",
+                "i2.xlarge",
+                "i2.2xlarge",
+                "i2.4xlarge",
+                "i2.8xlarge"
+            ]
+        },
+        "ImageId": {
+            "Description": "AMI ID for Instance",
+            "Type": "String"
+        },
+        "ReplicaNodeNameTag": {
+            "Description": "Instance Name",
+            "Type": "String"
+        },
+        "NodeReplicaSetIndex": {
+            "Description": "Instance Index",
+            "Type": "String"
+        },
+        "NodeShardIndex": {
+            "Description": "Shard Index",
+            "Type": "String"
+        },
+        "StackName": {
+            "Description": "Name of the parent stack",
+            "Type": "String"
+        },
+        "VolumeSize": {
+            "Type": "String",
+            "Description": "EBS Volume Size (data) to be attached to node in GBs",
+            "Default": "400"
+        },
+        "VolumeType": {
+            "Type": "String",
+            "Description": "EBS Volume Type (data) to be attached to node in GBs [io1,gp2]",
+            "Default": "gp2",
+            "AllowedValues": [
+                "gp2",
+                "io1"
+            ]
+        },
+        "Iops": {
+            "Type": "String",
+            "Description": "Iops of EBS volume when io1 type is chosen. Otherwise ignored",
+            "Default": "100"
+        },
+        "KeyName": {
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "Default": "home",
+            "Description": "Name of an existing EC2 KeyPair. MondoDB instances will launch with this KeyPair."
+        },
+        "ClusterReplicaSetCount": {
+            "Description": "Number of Replica Set Members. Choose 1 or 3",
+            "Type": "String",
+            "Default": "1",
+            "AllowedValues": [
+                "1",
+                "3"
+            ]
+        },
+        "ClusterShardCount": {
+            "Description": "Number of Shards [0,1,2,3]. 0==No Sharding. Set to > 1 for Sharding",
+            "Type": "String",
+            "Default": "0",
+            "AllowedValues": [
+                "0",
+                "1",
+                "2",
+                "3"
+            ]
+        },
+        "ShardsPerNode": {
+            "Description": "Number of Micro Shards Per Node",
+            "Type": "String",
+            "Default": "0",
+            "AllowedValues": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16"
+            ]
+        },
+        "MongoDBVersion": {
+            "Description": "MongoDB version",
+            "Type": "String",
+            "Default": "3.2",
+            "AllowedValues": [
+                "3.2",
+                "3.0",
+                "2.6"
+            ]
+        },
+        "ReplicaNodeWaitForNodeInstallWaitHandle": {
+            "Description": "Pre-signed Wait Handle URL to send signal for associated wait condition",
+            "Type": "String"
+        },
+        "BuildBucket": {
+            "Description": "Main Bucket where the templates/scripts are installed. Do not change.",
+            "Type": "String",
+            "Default": "quickstart-reference/mongodb/latest"
+        }
+    },
+    "Conditions": {
+        "UsePIops": {
+            "Fn::Equals": [
+                {
+                    "Ref": "VolumeType"
+                },
+                "io1"
+            ]
+        }
+    },
+    "Resources": {
+        "ReplicaNodeSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
+                "VpcId": {
+                    "Ref": "VPC"
+                },
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "27017",
+                        "ToPort": "27030",
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "28017",
+                        "ToPort": "28017",
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }
+                    }
+                ],
+                "SecurityGroupEgress": [
+                    {
+                        "IpProtocol": "-1",
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "1",
+                        "ToPort": "65535"
+                    }
+                ]
+            }
+        },
+        "ReplicaNodeNetworkInterface": {
+            "Type": "AWS::EC2::NetworkInterface",
+            "Properties": {
+                "Description": "Network Interface for Mongo Node",
+                "SubnetId": {
+                    "Ref": "NodeSubnet"
+                },
+                "GroupSet": [
+                    {
+                        "Ref": "ReplicaNodeSecurityGroup"
+                    }
+                ],
+                "SourceDestCheck": "true",
+                "Tags": [
+                    {
+                        "Key": "Network",
+                        "Value": "Private"
+                    }
+                ]
+            }
+        },
+        "ReplicaNodeIAMRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "Backup",
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:*",
+                                        "ec2:Describe*",
+                                        "ec2:AttachNetworkInterface",
+                                        "ec2:AttachVolume",
+                                        "ec2:CreateTags",
+                                        "ec2:CreateVolume",
+                                        "ec2:RunInstances",
+                                        "ec2:StartInstances",
+                                        "ec2:DeleteVolume",
+                                        "ec2:CreateSecurityGroup",
+                                        "ec2:CreateSnapshot"
+                                    ],
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:*",
+                                        "dynamodb:Scan",
+                                        "dynamodb:Query",
+                                        "dynamodb:GetItem",
+                                        "dynamodb:BatchGetItem",
+                                        "dynamodb:UpdateTable"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "ReplicaNodeIAMProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "ReplicaNodeIAMRole"
+                    }
+                ]
+            }
+        },
+        "ReplicaNodeInstance": {
+            "Type": "AWS::EC2::Instance",
+            "Metadata": {
+                "HostRole": "MongoDB Node"
+            },
+            "Properties": {
+                "NetworkInterfaces": [
+                    {
+                        "NetworkInterfaceId": {
+                            "Ref": "ReplicaNodeNetworkInterface"
+                        },
+                        "DeviceIndex": "0"
+                    }
+                ],
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "ImageId": {
+                    "Ref": "ImageId"
+                },
+                "IamInstanceProfile": {
+                    "Ref": "ReplicaNodeIAMProfile"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Ref": "ReplicaNodeNameTag"
+                        }
+                    },
+                    {
+                        "Key": "ClusterReplicaSetCount",
+                        "Value": {
+                            "Ref": "ClusterReplicaSetCount"
+                        }
+                    },
+                    {
+                        "Key": "NodeReplicaSetIndex",
+                        "Value": {
+                            "Ref": "NodeReplicaSetIndex"
+                        }
+                    },
+                    {
+                        "Key": "ClusterShardCount",
+                        "Value": {
+                            "Ref": "ClusterShardCount"
+                        }
+                    },
+                    {
+                        "Key": "ShardsPerNode",
+                        "Value": {
+                            "Ref": "ShardsPerNode"
+                        }
+                    },
+                    {
+                        "Key": "NodeShardIndex",
+                        "Value": {
+                            "Ref": "NodeShardIndex"
+                        }
+                    }
+                ],
+                "BlockDeviceMappings": [
+                    {
+                        "DeviceName": "/dev/xvdg",
+                        "Ebs": {
+                            "VolumeType": "io1",
+                            "DeleteOnTermination": "true",
+                            "VolumeSize": "25",
+                            "Iops": "250"
+                        }
+                    },
+                    {
+                        "DeviceName": "/dev/xvdh",
+                        "Ebs": {
+                            "VolumeType": "io1",
+                            "DeleteOnTermination": "true",
+                            "VolumeSize": "25",
+                            "Iops": "200"
+                        }
+                    },
+                    {
+                        "DeviceName": "/dev/xvdf",
+                        "Ebs": {
+                            "VolumeSize": {
+                                "Ref": "VolumeSize"
+                            },
+                            "VolumeType": {
+                                "Ref": "VolumeType"
+                            },
+                            "Iops": {
+                                "Fn::If": [
+                                    "UsePIops",
+                                    {
+                                        "Ref": "Iops"
+                                    },
+                                    {
+                                        "Ref": "AWS::NoValue"
+                                    }
+                                ]
+                            },
+                            "DeleteOnTermination": "true"
+                        }
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash -v\n",
+                                "mkdir -p /home/ec2-user/mongodb \n",
+                                "cd /home/ec2-user/mongodb \n",
+                                "# Wait until the NAT initializes and Internet is available \n",
+                                "until ping -c 1 ietf.org \n",
+                                "do \n",
+                                "sleep 5; \n",
+                                "done \n",
+                                "aws s3 cp s3://",
+                                {
+                                    "Ref": "BuildBucket"
+                                },
+                                "/scripts/orchestrator.sh orchestrator.sh\n",
+                                "chmod +x orchestrator.sh \n",
+                                "aws s3 cp s3://",
+                                {
+                                    "Ref": "BuildBucket"
+                                },
+                                "/scripts/init.sh init.sh\n",
+                                "aws s3 cp s3://",
+                                {
+                                    "Ref": "BuildBucket"
+                                },
+                                "/scripts/signalFinalStatus.sh signalFinalStatus.sh\n",
+                                "chmod +x signalFinalStatus.sh \n",
+                                "chmod +x init.sh \n",
+                                "#  Run the install \n",
+                                "#  Store stack name to tag DDB name\n",
+                                "echo ",
+                                {
+                                    "Fn::Join": [
+                                        "_",
+                                        [
+                                            "export TABLE_NAMETAG=",
+                                            {
+                                                "Ref": "StackName"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                " >> config.sh\n",
+                                "echo ",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "export MongoDBVersion=",
+                                            {
+                                                "Ref": "MongoDBVersion"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                " >> config.sh\n",
+                                "echo ",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "export VPC=",
+                                            {
+                                                "Ref": "VPC"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                " >> config.sh\n",
+                                "#  Store WaitHandler\n",
+                                "echo ",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "\"",
+                                            "export WAITHANDLER='",
+                                            {
+                                                "Ref": "ReplicaNodeWaitForNodeInstallWaitHandle"
+                                            },
+                                            "'",
+                                            "\""
+                                        ]
+                                    ]
+                                },
+                                " >> config.sh\n",
+                                "./init.sh > install.log 2>&1 \n",
+                                "#  Cleanup \n",
+                                "#rm -rf *\n",
+                                "chown -R ec2-user:ec2-user /home/ec2-user/ \n",
+                                "/home/ec2-user/mongodb/signalFinalStatus.sh 0\n"
+                            ]
+                        ]
+                    }
+                },
+                "InstanceType": {
+                    "Ref": "NodeInstanceType"
+                }
+            }
+        },
+        "NodeInstanceRecoveryAlarm": {
+            "Type": "AWS::CloudWatch::Alarm",
+            "Properties": {
+                "AlarmDescription": "EC2 Autorecovery for Node Instance. Autorecover if we fail EC2 status checks for 5 minutes.",
+                "Namespace": "AWS/EC2",
+                "MetricName": "StatusCheckFailed_System",
+                "Statistic": "Minimum",
+                "Period": "60",
+                "EvaluationPeriods": "5",
+                "ComparisonOperator": "GreaterThanThreshold",
+                "Threshold": "0",
+                "AlarmActions": [
+                    {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "arn:aws:automate:",
+                                {
+                                    "Ref": "AWS::Region"
+                                },
+                                ":ec2:recover"
+                            ]
+                        ]
+                    }
+                ],
+                "Dimensions": [
+                    {
+                        "Name": "InstanceId",
+                        "Value": {
+                            "Ref": "ReplicaNodeInstance"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
