@@ -700,6 +700,12 @@
                             ]
                         ]
                     },
+                    "BastionSecurityGroupID": {
+                        "Fn::GetAtt": [
+                            "BastionStack",
+                            "Outputs.BastionSecurityGroupID"
+                        ]
+                    },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
                     },
