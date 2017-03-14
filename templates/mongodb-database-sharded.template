@@ -1,6 +1,56 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "(000F) Deploy MongoDB Sharded Replica Set on AWS (Existing VPC)",
+    "Metadata": {
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {
+                        "default": "Network Configuration"
+                    },
+                    "Parameters": [
+                        "VPC",
+                        "PrimaryNodeSubnet",
+                        "Secondary0NodeSubnet",
+                        "Secondary1NodeSubnet",
+                        "RemoteAccessCIDR"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "Security Configuration"
+                    },
+                    "Parameters": [
+                        "KeyName"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "MongoDB Database Configuration"
+                    },
+                    "Parameters": [
+                        "ClusterReplicaSetCount",
+                        "ClusterShardCount",
+                        "ConfigServerInstanceType",
+                        "Iops",
+                        "MongoDBVersion",
+                        "NodeInstanceType",
+                        "ShardsPerNode",
+                        "VolumeSize",
+                        "VolumeType"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "AWS Quick Start Configuration"
+                    },
+                    "Parameters": [
+                        "BuildBucket"
+                    ]
+                }
+            ]
+        }
+    },
     "Parameters": {
         "ClusterReplicaSetCount": {
             "Description": "Number of Replica Set Members. Choose 1 or 3",
