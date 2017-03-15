@@ -15,6 +15,10 @@
             "Description": "ID of the MongoDB Inter-Server Communication Security Group (e.g., sg-7f16e910)",
             "Type": "AWS::EC2::SecurityGroup::Id"
         },
+        "MongoDBNodeIAMProfileID": {
+            "Description": "ID of the MongoDB IAM Profile",
+            "Type": "String"
+        },
         "NodeSubnet": {
             "Description": "Subnet Id",
             "Type": "String"
@@ -192,78 +196,6 @@
                 ]
             }
         },
-        "ReplicaNodeIAMRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": [
-                                    "ec2.amazonaws.com"
-                                ]
-                            },
-                            "Action": [
-                                "sts:AssumeRole"
-                            ]
-                        }
-                    ]
-                },
-                "Path": "/",
-                "Policies": [
-                    {
-                        "PolicyName": "Backup",
-                        "PolicyDocument": {
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Action": [
-                                        "s3:*",
-                                        "ec2:Describe*",
-                                        "ec2:AttachNetworkInterface",
-                                        "ec2:AttachVolume",
-                                        "ec2:CreateTags",
-                                        "ec2:CreateVolume",
-                                        "ec2:RunInstances",
-                                        "ec2:StartInstances",
-                                        "ec2:DeleteVolume",
-                                        "ec2:CreateSecurityGroup",
-                                        "ec2:CreateSnapshot"
-                                    ],
-                                    "Resource": "*"
-                                },
-                                {
-                                    "Effect": "Allow",
-                                    "Action": [
-                                        "dynamodb:*",
-                                        "dynamodb:Scan",
-                                        "dynamodb:Query",
-                                        "dynamodb:GetItem",
-                                        "dynamodb:BatchGetItem",
-                                        "dynamodb:UpdateTable"
-                                    ],
-                                    "Resource": [
-                                        "*"
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        "ReplicaNodeIAMProfile": {
-            "Type": "AWS::IAM::InstanceProfile",
-            "Properties": {
-                "Path": "/",
-                "Roles": [
-                    {
-                        "Ref": "ReplicaNodeIAMRole"
-                    }
-                ]
-            }
-        },
         "ReplicaNodeInstance": {
             "Type": "AWS::EC2::Instance",
             "Metadata": {
@@ -285,7 +217,7 @@
                     "Ref": "ImageId"
                 },
                 "IamInstanceProfile": {
-                    "Ref": "ReplicaNodeIAMProfile"
+                    "Ref": "MongoDBNodeIAMProfileID"
                 },
                 "Tags": [
                     {

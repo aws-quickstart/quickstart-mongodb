@@ -447,6 +447,78 @@
                 ]
             }
         },
+        "MongoDBNodeIAMRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "Backup",
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:*",
+                                        "ec2:Describe*",
+                                        "ec2:AttachNetworkInterface",
+                                        "ec2:AttachVolume",
+                                        "ec2:CreateTags",
+                                        "ec2:CreateVolume",
+                                        "ec2:RunInstances",
+                                        "ec2:StartInstances",
+                                        "ec2:DeleteVolume",
+                                        "ec2:CreateSecurityGroup",
+                                        "ec2:CreateSnapshot"
+                                    ],
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:*",
+                                        "dynamodb:Scan",
+                                        "dynamodb:Query",
+                                        "dynamodb:GetItem",
+                                        "dynamodb:BatchGetItem",
+                                        "dynamodb:UpdateTable"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "MongoDBNodeIAMProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "Roles": [
+                    {
+                        "Ref": "MongoDBNodeIAMRole"
+                    }
+                ]
+            }
+        },
         "PrimaryReplicaNode0WaitForNodeInstallWaitHandle": {
             "Type": "AWS::CloudFormation::WaitConditionHandle",
             "Properties": {},
@@ -507,6 +579,9 @@
                     },
                     "MongoDBServersSecurityGroupID": {
                         "Ref": "MongoDBServersSecurityGroup"
+                    },
+                    "MongoDBNodeIAMProfileID": {
+                        "Ref": "MongoDBNodeIAMProfile"
                     },
                     "ShardsPerNode": {
                         "Ref": "ShardsPerNode"
@@ -613,6 +688,9 @@
                     "MongoDBServersSecurityGroupID": {
                         "Ref": "MongoDBServersSecurityGroup"
                     },
+                    "MongoDBNodeIAMProfileID": {
+                        "Ref": "MongoDBNodeIAMProfile"
+                    },
                     "ShardsPerNode": {
                         "Ref": "ShardsPerNode"
                     },
@@ -717,6 +795,9 @@
                     },
                     "MongoDBServersSecurityGroupID": {
                         "Ref": "MongoDBServersSecurityGroup"
+                    },
+                    "MongoDBNodeIAMProfileID": {
+                        "Ref": "MongoDBNodeIAMProfile"
                     },
                     "ShardsPerNode": {
                         "Ref": "ShardsPerNode"
