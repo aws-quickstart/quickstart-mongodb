@@ -501,9 +501,6 @@
                     "NodeSubnet": {
                         "Ref": "PrimaryNodeSubnet"
                     },
-                    "BastionSecurityGroupID": {
-                        "Ref": "BastionSecurityGroupID"
-                    },
                     "MongoDBServerSecurityGroupID": {
                         "Ref": "MongoDBServerSecurityGroup"
                     },
@@ -609,9 +606,6 @@
                     "NodeSubnet": {
                         "Ref": "Secondary0NodeSubnet"
                     },
-                    "BastionSecurityGroupID": {
-                        "Ref": "BastionSecurityGroupID"
-                    },
                     "MongoDBServerSecurityGroupID": {
                         "Ref": "MongoDBServerSecurityGroup"
                     },
@@ -716,9 +710,6 @@
                     },
                     "NodeSubnet": {
                         "Ref": "Secondary1NodeSubnet"
-                    },
-                    "BastionSecurityGroupID": {
-                        "Ref": "BastionSecurityGroupID"
                     },
                     "MongoDBServerSecurityGroupID": {
                         "Ref": "MongoDBServerSecurityGroup"

@@ -7,10 +7,6 @@
             "Description": "VPC-ID of your existing Virtual Private Cloud (VPC) where you want to depoy MongoDB cluster.",
             "AllowedPattern": "vpc-[0-9a-z]{8}"
         },
-        "BastionSecurityGroupID": {
-            "Description": "ID of the Bastion Security Group (e.g., sg-7f16e910)",
-            "Type": "AWS::EC2::SecurityGroup::Id"
-        },
         "MongoDBServerSecurityGroupID": {
             "Description": "ID of the MongoDB Server Access Security Group (e.g., sg-7f16e910)",
             "Type": "AWS::EC2::SecurityGroup::Id"
