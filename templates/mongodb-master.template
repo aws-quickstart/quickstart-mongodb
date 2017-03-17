@@ -420,7 +420,15 @@
 					]
 				}
 			]
-		}
+		},
+        "RepeatSubnet": {
+            "Fn::Equals": [
+                {
+                    "Ref": "NumberOfAZs"
+                },
+                "2"
+            ]
+        }
 	},
     "Mappings": {
         "AWSInfoRegionMap": {
@@ -529,7 +537,9 @@
                     "NATInstanceType": {
                         "Ref": "NATInstanceType"
                     },
-                    "NumberOfAZs": "3",
+                    "NumberOfAZs": {
+                        "Ref": "NumberOfAZs"
+                    },
                     "PrivateSubnet1ACIDR": {
                         "Ref": "PrivateSubnet1CIDR"
                     },
@@ -732,9 +742,20 @@
                         ]
                     },
                     "Secondary1NodeSubnet": {
-                        "Fn::GetAtt": [
-                            "VPCStack",
-                            "Outputs.PrivateSubnet3AID"
+                        "Fn::If": [
+                            "RepeatSubnet",
+                            {
+                                "Fn::GetAtt": [
+                                    "VPCStack",
+                                    "Outputs.PrivateSubnet2AID"
+                                ]
+                            },
+                            {
+                                "Fn::GetAtt": [
+                                    "VPCStack",
+                                    "Outputs.PrivateSubnet3AID"
+                                ]
+                            }
                         ]
                     },
                     "ShardsPerNode": {
