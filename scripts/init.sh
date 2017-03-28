@@ -8,6 +8,7 @@
 #################################################################
 yum -y update
 yum install -y jq
+yum install -y xfsprogs
 
 source ./orchestrator.sh -i
 source ./config.sh
@@ -34,21 +35,11 @@ if [ -z "$version" ] ; then
   version="3.2"
 fi
 
-if [ "${version}" == "2.6" ]; then
-    echo "[mongodb-org-${version}]
-name=MongoDB 2.6 Repository
-baseurl=http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/
-gpgcheck=0
-enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
-
-else
-    echo "[mongodb-org-${version}]
+echo "[mongodb-org-${version}]
 name=MongoDB Repository
 baseurl=http://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/${version}/x86_64/
 gpgcheck=0
 enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
-
-fi
 
 # To be safe, wait a bit for flush
 sleep 5
@@ -126,8 +117,8 @@ fi
 #################################################################
 # Make filesystems, set ulimits and block read ahead on ALL nodes
 #################################################################
-mkfs -t ext4 /dev/xvdf
-echo "/dev/xvdf /data ext4 defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
+mkfs.xfs -f /dev/xvdf
+echo "/dev/xvdf /data xfs defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
 mkdir -p /data
 mount /data
 chown -R mongod:mongod /data
@@ -192,11 +183,11 @@ if [ "${NODE_TYPE}" != "Config" ]; then
     #################################################################
     # Make the filesystems, add persistent mounts
     #################################################################
-    mkfs -t ext4 /dev/xvdg
-    mkfs -t ext4 /dev/xvdh
+    mkfs.xfs -f /dev/xvdg
+    mkfs.xfs -f /dev/xvdh
 
-    echo "/dev/xvdg /journal ext4 defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
-    echo "/dev/xvdh /log ext4 defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
+    echo "/dev/xvdg /journal xfs defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
+    echo "/dev/xvdh /log xfs defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
 
     #################################################################
     # Make directories for data, journal, and logs

@@ -147,8 +147,7 @@
             "AllowedValues": [
                 "3.4",
                 "3.2",
-                "3.0",
-                "2.6"
+                "3.0"
             ]
         },
         "ReplicaNodeWaitForNodeInstallWaitHandle": {
@@ -168,6 +167,14 @@
                     "Ref": "VolumeType"
                 },
                 "io1"
+            ]
+        },
+        "CreateNoShard": {
+            "Fn::Equals": [
+                {
+                    "Ref": "ClusterShardCount"
+                },
+                "0"
             ]
         }
     },
@@ -323,7 +330,22 @@
                                 {
                                     "Ref": "BuildBucket"
                                 },
-                                "/scripts/init.sh init.sh\n",
+                                "/scripts/disable-transparent-hugepages /etc/init.d/disable-transparent-hugepages\n",
+                                "chmod +x /etc/init.d/disable-transparent-hugepages \n",
+                                "chkconfig --add disable-transparent-hugepages \n",
+                                "aws s3 cp s3://",
+                                {
+                                    "Ref": "BuildBucket"
+                                },
+                                "/scripts/",
+                                {
+                                    "Fn::If": [
+                                        "CreateNoShard",
+                                        "init_replica.sh",
+                                        "init.sh"
+                                    ]
+                                },
+                                " init.sh\n",
                                 "aws s3 cp s3://",
                                 {
                                     "Ref": "BuildBucket"

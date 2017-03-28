@@ -82,8 +82,7 @@
             "Default": "3.2",
             "AllowedValues": [
                 "3.2",
-                "3.0",
-                "2.6"
+                "3.0"
             ]
         },
         "ShardsPerNode": {

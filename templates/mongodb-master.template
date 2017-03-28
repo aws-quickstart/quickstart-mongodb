@@ -316,8 +316,7 @@
 	        "Description": "MongoDB version",
 	        "AllowedValues": [
 	            "3.2",
-	            "3.0",
-	            "2.6"
+	            "3.0"
 	        ]
 	    },
 	    "ClusterReplicaSetCount": {

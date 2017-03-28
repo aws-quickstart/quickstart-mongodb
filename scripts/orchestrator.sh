@@ -336,6 +336,9 @@ SetMyStatus() {
 # ------------------------------------------------------------------
 #          Use Status column in DDB to orchestrate
 #          Count number of hosts in specific state
+#          When querying for nodes in WORKING state,
+#          proceed if WORKING + FINISHED count >= EXPECTED_COUNT
+#          This is necessary because secondary may move to FINISHED state before primary.
 #          Usage: QueryStatusCount "INSTALL_COMPLETE"
 #                 Get total hosts which have Status=INSTALL_COMPLETE
 # ------------------------------------------------------------------
@@ -355,14 +358,29 @@ QueryStatusCount(){
                 ],
                 "ComparisonOperator":"EQ"
                 }} ' | ${JQ_COMMAND}  '.Items[]|.PrivateIpAddress|.S' | wc -l)
-    
+
+    if [ "$status" == "WORKING" ]; then
+        finished_count=$(${AWS_CMD} dynamodb scan --table-name ${TABLE_NAME} --scan-filter '
+            { "Status" : {
+                "AttributeValueList": [
+                    {
+                        "S": '\"FINISHED\"'
+                    }
+                ],
+                "ComparisonOperator":"EQ"
+                }} ' | ${JQ_COMMAND}  '.Items[]|.PrivateIpAddress|.S' | wc -l)
+    fi
     
     re='^[0-9]+$'
     if ! [[ $count =~ $re ]] ; then
         count=0
     fi
+
+    if ! [[ $finished_count =~ $re ]] ; then
+        finished_count=0
+    fi
     
-    echo ${count}
+    echo $((count + finished_count))
 }
 
 # ------------------------------------------------------------------
