@@ -467,6 +467,12 @@ EOF
                 # Houston, we've had a problem here...
                 ./signalFinalStatus.sh 1
             fi
+        else
+            port=27017
+mongo --port ${port} << EOF
+rs.initiate()
+EOF
+
         fi
 
         if [ ${SHARDCOUNT} -gt 0 ]; then
