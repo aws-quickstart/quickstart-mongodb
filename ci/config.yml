@@ -1,6 +1,6 @@
 global:
   qsname: quickstart-mongodb
-  owner: shukvino@amazon.com
+  owner: quickstart-eng@amazon.com
   reporting: true
   regions:
     - ap-northeast-1
