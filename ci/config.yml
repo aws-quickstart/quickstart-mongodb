@@ -1,7 +1,6 @@
 global:
   qsname: quickstart-mongodb
   owner: shukvino@amazon.com
-  s3bucket: cfautomated
   reporting: true
   regions:
     - ap-northeast-1
