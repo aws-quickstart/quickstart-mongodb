@@ -114,6 +114,57 @@ enable_all_listen() {
   done
 }
 
+check_primary() {
+    expected_state=$1
+    master_substr=\"ismaster\"\ :\ ${expected_state}
+    while true; do
+      check_master=$( mongo --eval "printjson(db.isMaster())" )
+      log "${check_master}..."
+      if [[ $check_master == *"$master_substr"* ]]; then
+        log "Node is in desired state, proceed with security setup"
+        break
+      else
+        log "Wait for node to become primary"
+        sleep 10
+      fi
+    done
+}
+
+setup_security_common() {
+    DDB_TABLE=$1
+    auth_key=$(./orchestrator.sh -f -n $DDB_TABLE)
+    echo $auth_key > /mongo_auth/mongodb.key
+    chmod 400 /mongo_auth/mongodb.key
+    chown -R mongod:mongod /mongo_auth
+    sed $'s/processManagement:/security: \\\n  authorization: enabled \\\n  keyFile: \/mongo_auth\/mongodb.key \\\n\\\n&/g' /etc/mongod.conf >> /tmp/mongod_sec.txt
+    mv /tmp/mongod_sec.txt /etc/mongod.conf
+}
+
+setup_security_primary() {
+    DDB_TABLE=$1
+    port=27017
+    MONGO_PASSWORD=$( cat /tmp/mongo_pass.txt )
+
+mongo --port ${port} << EOF
+use admin;
+db.createUser(
+  {
+    user: "${MONGODB_ADMIN_USER}",
+    pwd: "${MONGO_PASSWORD}",
+    roles: [ { role: "root", db: "admin" } ]
+  }
+);
+EOF
+
+    service mongod stop
+    ./orchestrator.sh -k -n $DDB_TABLE
+    sleep 5
+    setup_security_common $DDB_TABLE
+    sleep 5
+    service mongod start
+    sleep 10
+    ./orchestrator.sh -s "SECURED" -n $DDB_TABLE
+}
 
 #################################################################
 # Setup MongoDB servers and config nodes
@@ -447,12 +498,31 @@ EOF
     #################################################################
     ./orchestrator.sh -s "FINISHED" -n "${SHARD}_${UNIQUE_NAME}"
     ./orchestrator.sh -w "FINISHED=${NODES}" -n "${SHARD}_${UNIQUE_NAME}"
+
+    echo "Setting up security, bootstrap table: " "${SHARD}_${UNIQUE_NAME}"
+    # wait for mongo to become primary
+    sleep 10
+    check_primary true
+
+    setup_security_primary "${SHARD}_${UNIQUE_NAME}"
+
+    ./orchestrator.sh -w "SECURED=${NODES}" -n "${SHARD}_${UNIQUE_NAME}"
     ./orchestrator.sh -d -n "${SHARD}_${UNIQUE_NAME}"
+    rm /tmp/mongo_pass.txt
 else
     #################################################################
     #  Update status of Secondary to FINISHED
     #################################################################
     ./orchestrator.sh -s "FINISHED" -n "${SHARD}_${UNIQUE_NAME}"
+    ./orchestrator.sh -w "FINISHED=${NODES}" -n "${SHARD}_${UNIQUE_NAME}"
+
+    ./orchestrator.sh -w "SECURED=1" -n "${SHARD}_${UNIQUE_NAME}"
+    service mongod stop
+    setup_security_common "${SHARD}_${UNIQUE_NAME}"
+    service mongod start
+    ./orchestrator.sh -s "SECURED" -n "${SHARD}_${UNIQUE_NAME}"
+    rm /tmp/mongo_pass.txt
+
 fi
 
 # TBD - Add custom CloudWatch Metrics for MongoDB

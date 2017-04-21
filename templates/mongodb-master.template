@@ -56,6 +56,8 @@
 						"ConfigServerInstanceType",
 						"Iops",
 						"MongoDBVersion",
+						"MongoDBAdminUsername",
+						"MongoDBAdminPassword",
 						"NodeInstanceType",
 						"ShardsPerNode",
 						"VolumeSize",
@@ -319,6 +321,23 @@
 	            "3.0"
 	        ]
 	    },
+		"MongoDBAdminUsername": {
+			"Default": "admin",
+			"NoEcho": "true",
+			"Description": "MongoDB admin account username",
+			"Type": "String",
+			"MinLength": "1",
+			"MaxLength": "16",
+			"AllowedPattern": "[a-zA-Z][a-zA-Z0-9]*",
+			"ConstraintDescription": "must begin with a letter and contain only alphanumeric characters."
+		},
+		"MongoDBAdminPassword": {
+			"AllowedPattern": "([A-Za-z0-9_!@#$%^&*-]{8,32})",
+			"ConstraintDescription": "Input your MongoDB database password, Min 8, Maximum of 32 characters.",
+			"Description": "Enter your MongoDB Database Password, Min 8, maximum of 32 characters.",
+			"NoEcho": "true",
+			"Type": "String"
+		},
 	    "ClusterReplicaSetCount": {
 	        "Default": "1",
 	        "Type": "String",
@@ -725,7 +744,13 @@
                     "MongoDBVersion": {
                         "Ref": "MongoDBVersion"
                     },
-                    "NodeInstanceType": {
+					"MongoDBAdminUsername": {
+						"Ref": "MongoDBAdminUsername"
+					},
+					"MongoDBAdminPassword": {
+						"Ref": "MongoDBAdminPassword"
+					},
+					"NodeInstanceType": {
                         "Ref": "NodeInstanceType"
                     },
                     "PrimaryNodeSubnet": {

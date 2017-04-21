@@ -90,10 +90,12 @@ PRINT=0
 BLOCK_UNTIL_TABLE_LIVE=0
 DELETE_TABLE=0
 GET_IPv4=0
+CREATE_KEY=0
+FETCH_KEY=0
 
 [[ $# -eq 0 ]] && usage;
 
-while getopts "hcbpdgis:i:n:q:w:" o; do
+while getopts "hcbpdgikfs:i:n:q:w:" o; do
   case "${o}" in
     h) usage && exit 0
     ;;
@@ -110,6 +112,10 @@ while getopts "hcbpdgis:i:n:q:w:" o; do
     q) QUERY_STATUS=${OPTARG}
     ;;
     s) NEW_STATUS=${OPTARG}
+    ;;
+    k) CREATE_KEY=1
+    ;;
+    f) FETCH_KEY=1
     ;;
     i) NEW_ITEM_PAIR=${OPTARG}
     ;;
@@ -297,6 +303,12 @@ InsertMyKeyValueS() {
     echo ${cmd} | sh
 }
 
+FetchAuthKey() {
+    AuthKey=$(${AWS_CMD} dynamodb scan --table-name ${TABLE_NAME} | ${JQ_COMMAND}  '.Items[]|.AuthKey|.S' | grep -v "null")
+    AuthKey=$(echo ${AuthKey} | sed s/\"//g)
+    AuthKey=$(echo ${AuthKey} | sed s/\ //g)
+    echo ${AuthKey}
+}
 
 # ------------------------------------------------------------------
 #          Use private ip as primary hash key
@@ -454,6 +466,15 @@ fi
 
 if [ $NEW_ITEM_PAIR ]; then
     InsertMyKeyValueS ${NEW_ITEM_PAIR}
+fi
+
+if [ $CREATE_KEY -eq 1 ]; then
+    auth_key=$( openssl rand -base64 756 | grep -o [[:alnum:]] | tr -d '\n' )
+    InsertMyKeyValueS "AuthKey=${auth_key}"
+fi
+
+if [ $FETCH_KEY -eq 1 ]; then
+    FetchAuthKey
 fi
 
 if [ $QUERY_STATUS ]; then

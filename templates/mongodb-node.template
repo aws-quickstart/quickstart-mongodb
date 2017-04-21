@@ -150,6 +150,23 @@
                 "3.0"
             ]
         },
+        "MongoDBAdminUsername": {
+            "Default": "admin",
+            "NoEcho": "true",
+            "Description": "MongoDB admin account username",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "16",
+            "AllowedPattern": "[a-zA-Z][a-zA-Z0-9]*",
+            "ConstraintDescription": "must begin with a letter and contain only alphanumeric characters."
+        },
+        "MongoDBAdminPassword": {
+            "AllowedPattern": "([A-Za-z0-9_!@#$%^&*-]{8,32})",
+            "ConstraintDescription": "Input your MongoDB database password, Min 8, Maximum of 32 characters.",
+            "Description": "Enter your MongoDB Database Password, Min 8, maximum of 32 characters.",
+            "NoEcho": "true",
+            "Type": "String"
+        },
         "ReplicaNodeWaitForNodeInstallWaitHandle": {
             "Description": "Pre-signed Wait Handle URL to send signal for associated wait condition",
             "Type": "String"
@@ -411,6 +428,25 @@
                                     ]
                                 },
                                 " >> config.sh\n",
+                                "echo ",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "export MONGODB_ADMIN_USER=",
+                                            {
+                                                "Ref": "MongoDBAdminUsername"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                " >> config.sh\n",
+                                "echo ",
+                                {
+                                    "Ref": "MongoDBAdminPassword"
+                                },
+                                " >> /tmp/mongo_pass.txt\n",
+                                "mkdir -p /mongo_auth \n",
                                 "./init.sh > install.log 2>&1 \n",
                                 "#  Cleanup \n",
                                 "#rm -rf *\n",
