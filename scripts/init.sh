@@ -8,6 +8,7 @@
 #################################################################
 yum -y update
 yum install -y jq
+yum install -y xfsprogs
 
 source ./orchestrator.sh -i
 source ./config.sh
@@ -34,21 +35,11 @@ if [ -z "$version" ] ; then
   version="3.2"
 fi
 
-if [ "${version}" == "2.6" ]; then
-    echo "[mongodb-org-${version}]
-name=MongoDB 2.6 Repository
-baseurl=http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/
-gpgcheck=0
-enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
-
-else
-    echo "[mongodb-org-${version}]
+echo "[mongodb-org-${version}]
 name=MongoDB Repository
 baseurl=http://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/${version}/x86_64/
 gpgcheck=0
 enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
-
-fi
 
 # To be safe, wait a bit for flush
 sleep 5
@@ -126,8 +117,8 @@ fi
 #################################################################
 # Make filesystems, set ulimits and block read ahead on ALL nodes
 #################################################################
-mkfs -t ext4 /dev/xvdf
-echo "/dev/xvdf /data ext4 defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
+mkfs.xfs -f /dev/xvdf
+echo "/dev/xvdf /data xfs defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
 mkdir -p /data
 mount /data
 chown -R mongod:mongod /data
@@ -192,11 +183,11 @@ if [ "${NODE_TYPE}" != "Config" ]; then
     #################################################################
     # Make the filesystems, add persistent mounts
     #################################################################
-    mkfs -t ext4 /dev/xvdg
-    mkfs -t ext4 /dev/xvdh
+    mkfs.xfs -f /dev/xvdg
+    mkfs.xfs -f /dev/xvdh
 
-    echo "/dev/xvdg /journal ext4 defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
-    echo "/dev/xvdh /log ext4 defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
+    echo "/dev/xvdg /journal xfs defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
+    echo "/dev/xvdh /log xfs defaults,auto,noatime,noexec 0 0" | tee -a /etc/fstab
 
     #################################################################
     # Make directories for data, journal, and logs
@@ -403,11 +394,49 @@ EOF
         # Configure the replica sets, set this host as Primary with
         # highest priority
         #################################################################
-        port=27018
-        c=0
-        while [ $c -lt ${MICROSHARDS} ]; do
+        if [ ${MICROSHARDS} -gt 0 ]; then
+            port=27018
+            c=0
+            while [ $c -lt ${MICROSHARDS} ]; do
 
-            conf="{\"_id\" : \"${SHARD}-rs${c}\", \"version\" : 1, \"members\" : ["
+                conf="{\"_id\" : \"${SHARD}-rs${c}\", \"version\" : 1, \"members\" : ["
+                node=1
+                for addr in "${IPADDRS[@]}"
+                do
+                    addr="${addr%\"}"
+                    addr="${addr#\"}"
+
+                    priority=5
+                    if [ "${addr}" == "${IP}" ]; then
+                        priority=10
+                    fi
+                    conf="${conf}{\"_id\" : ${node}, \"host\" :\"${addr}:${port}\", \"priority\":${priority}}"
+
+                    if [ $node -lt ${NODES} ]; then
+                        conf=${conf}","
+                    fi
+
+                    (( node++ ))
+                done
+
+                conf=${conf}"]}"
+                echo ${conf}
+
+mongo --port ${port} << EOF
+rs.initiate(${conf})
+EOF
+
+                if [ $? -ne 0 ]; then
+                    # Houston, we've had a problem here...
+                    ./signalFinalStatus.sh 1
+                fi
+
+                (( port++ ))
+                (( c++ ))
+            done
+        elif [ "${NODES}" == "3" ]; then
+            port=27017
+            conf="{\"_id\" : \"${SHARD}\", \"version\" : 1, \"members\" : ["
             node=1
             for addr in "${IPADDRS[@]}"
             do
@@ -434,14 +463,17 @@ mongo --port ${port} << EOF
 rs.initiate(${conf})
 EOF
 
-        if [ $? -ne 0 ]; then
-            # Houston, we've had a problem here...
-            ./signalFinalStatus.sh 1
-        fi
+            if [ $? -ne 0 ]; then
+                # Houston, we've had a problem here...
+                ./signalFinalStatus.sh 1
+            fi
+        else
+            port=27017
+mongo --port ${port} << EOF
+rs.initiate()
+EOF
 
-            (( port++ ))
-            (( c++ ))
-        done
+        fi
 
         if [ ${SHARDCOUNT} -gt 0 ]; then
             #################################################################
