@@ -18,5 +18,9 @@
   {
     "ParameterKey": "AvailabilityZones",
     "ParameterValue": "$[alfred_genaz_3]"
+  },
+  {
+    "ParameterValue": "T35TMong0",
+    "ParameterKey": "MongoDBAdminPassword"
   }
 ]
