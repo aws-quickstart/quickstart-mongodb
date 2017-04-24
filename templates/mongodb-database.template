@@ -277,49 +277,49 @@
     "Mappings": {
         "AWSAMIRegionMap": {
             "AMI": {
-                "AMZNLINUX": "amzn-ami-hvm-2016.09.1.20170119-x86_64-gp2"
+                "AMZNLINUX": "amzn-ami-hvm-2017.03.0.20170417-x86_64-gp2"
             },
             "ap-northeast-1": {
-                "AMZNLINUX": "ami-56d4ad31"
+                "AMZNLINUX": "ami-923d12f5"
             },
             "ap-northeast-2": {
-                "AMZNLINUX": "ami-dac312b4"
+                "AMZNLINUX": "ami-9d15c7f3"
             },
             "ap-south-1": {
-                "AMZNLINUX": "ami-f9daac96"
+                "AMZNLINUX": "ami-52c7b43d"
             },
             "ap-southeast-1": {
-                "AMZNLINUX": "ami-dc9339bf"
+                "AMZNLINUX": "ami-fc5ae39f"
             },
             "ap-southeast-2": {
-                "AMZNLINUX": "ami-1c47407f"
+                "AMZNLINUX": "ami-162c2575"
             },
             "ca-central-1": {
-                "AMZNLINUX": "ami-ebed508f"
+                "AMZNLINUX": "ami-0bd66a6f"
             },
             "eu-central-1": {
-                "AMZNLINUX": "ami-af0fc0c0"
+                "AMZNLINUX": "ami-b968bad6"
             },
             "eu-west-1": {
-                "AMZNLINUX": "ami-70edb016"
+                "AMZNLINUX": "ami-01ccc867"
             },
             "eu-west-2": {
-                "AMZNLINUX": "ami-f1949e95"
+                "AMZNLINUX": "ami-b6daced2"
             },
             "sa-east-1": {
-                "AMZNLINUX": "ami-80086dec"
+                "AMZNLINUX": "ami-37cfad5b"
             },
             "us-east-1": {
-                "AMZNLINUX": "ami-0b33d91d"
+                "AMZNLINUX": "ami-c58c1dd3"
             },
             "us-east-2": {
-                "AMZNLINUX": "ami-c55673a0"
+                "AMZNLINUX": "ami-4191b524"
             },
             "us-west-1": {
-                "AMZNLINUX": "ami-165a0876"
+                "AMZNLINUX": "ami-7a85a01a"
             },
             "us-west-2": {
-                "AMZNLINUX": "ami-f173cc91"
+                "AMZNLINUX": "ami-4836a428"
             }
         },
         "AWSInfoRegionMap": {
@@ -898,7 +898,7 @@
                 ]
             },
             "Description": "Private IP Address of Secondary Replica 0 Node",
-            "Condition" : "IfSecondaryReplicaNode0"
+            "Condition": "IfSecondaryReplicaNode0"
         },
         "SecondaryReplicaNode1Ip": {
             "Value": {
@@ -908,7 +908,7 @@
                 ]
             },
             "Description": "Private IP Address of Secondary Replica 1 Node",
-            "Condition" : "IfSecondaryReplicaNode0"
+            "Condition": "IfSecondaryReplicaNode0"
         }
     }
 }
