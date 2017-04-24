@@ -318,6 +318,7 @@
 	        "Description": "MongoDB version",
 	        "AllowedValues": [
 	            "3.2",
+                "3.4",
 	            "3.0"
 	        ]
 	    },
