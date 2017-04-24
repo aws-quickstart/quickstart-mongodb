@@ -98,8 +98,8 @@
             "ConstraintDescription": "must begin with a letter and contain only alphanumeric characters."
         },
         "MongoDBAdminPassword": {
-            "AllowedPattern": "([A-Za-z0-9_!@#$%^&*-]{8,32})",
-            "ConstraintDescription": "Input your MongoDB database password, Min 8, Maximum of 32 characters.",
+            "AllowedPattern": "([A-Za-z0-9_@-]{8,32})",
+            "ConstraintDescription": "Input your MongoDB database password, Min 8, Maximum of 32 characters. . Allowed characters are: [A-Za-z0-9_@-]",
             "Description": "Enter your MongoDB Database Password, Min 8, maximum of 32 characters.",
             "NoEcho": "true",
             "Type": "String"

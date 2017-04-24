@@ -216,11 +216,7 @@ mount /journal
 #  Figure out how much RAM we have and how to slice it up
 #################################################################
 memory=$(vmstat -s | grep "total memory" | sed -e 's/ total.*//g' | sed -e 's/[ ]//g' | tr -d '\n')
-if [ "${MICROSHARDS}" != "0" ]; then
-    memory=$(printf %.0f $(echo "${memory} / 1024 / ${MICROSHARDS} * .9 / 1024" | bc))
-else
-    memory=$(printf %.0f $(echo "${memory} / 1024 / 1 * .9 / 1024" | bc))
-fi
+memory=$(printf %.0f $(echo "${memory} / 1024 / 1 * .9 / 1024" | bc))
 
 if [ ${memory} -lt 1 ]; then
     memory=1
@@ -230,27 +226,11 @@ fi
 #  Make data directories and add symbolic links for journal files
 #################################################################
 
-
-#  Handle case when core sharding count is 0 - Karthik
-
-if [ "${MICROSHARDS}" != "0" ]; then
-  c=0
-  while [ $c -lt $MICROSHARDS ]
-  do
-      mkdir -p /data/${SHARD}-rs${c}
-      mkdir -p /journal/${SHARD}-rs${c}
-
-      # Add links for journal to data directory
-      ln -s /journal/${SHARD}-rs${c} /data/${SHARD}-rs${c}/journal
-      (( c++ ))
-  done
-else
-  mkdir -p /data/
-  mkdir -p /journal/
+mkdir -p /data/
+mkdir -p /journal/
 
   # Add links for journal to data directory
-  ln -s /journal/ /data/journal
-fi
+ln -s /journal/ /data/journal
 
 mkdir -p /log
 mount /log
@@ -268,89 +248,36 @@ chown -R mongod:mongod /data
 c=0
 port=27017
 
-#  Handle case when core sharding count is 0 - Karthik
-if [ "${MICROSHARDS}" != "0" ]; then
-    echo "" > /etc/cgconfig.conf
-    while [ $c -lt $MICROSHARDS ]
-    do
-      cp mongod.conf /etc/mongod${c}.conf
-      (( port++ ))
+cp mongod.conf /etc/mongod.conf
+sed -i "s/.*port:.*/  port: ${port}/g" /etc/mongod.conf
+echo "replication:" >> /etc/mongod.conf
+echo "  replSetName: ${SHARD}" >> /etc/mongod.conf
 
-    #Line below overwrites the conf (fix reported by rick)
-      #cp /etc/mongod.conf /etc/mongod${c}.conf
-      sed -i "s/.*path:.*/  path: \/log\/mongod${c}.log/g" /etc/mongod${c}.conf
-      sed -i "s/.*port:.*/  port: ${port}/g" /etc/mongod${c}.conf
-      sed -i "s/.*dbPath:.*/  dbPath: \\/data\\/${SHARD}-rs${c}/g" /etc/mongod${c}.conf
-      sed -i "s/.*pidFilePath:.*/  pidFilePath: \/var\/run\/mongod\/mongod${c}.pid/g" /etc/mongod${c}.conf
-      echo "replication:" >> /etc/mongod${c}.conf
-      echo "  replSetName: ${SHARD}-rs${c}" >> /etc/mongod${c}.conf
+echo CGROUP_DAEMON="memory:mongod" > /etc/sysconfig/mongod
 
-      cp /etc/init.d/mongod /etc/init.d/mongod${c}
-      sed -i "s/CONFIGFILE=.*/CONFIGFILE=\"\/etc\/mongod${c}\.conf\"/g" /etc/init.d/mongod${c}
-      sed -i "s/SYSCONFIG=.*/SYSCONFIG=\"\/etc\/sysconfig\/mongod${c}\"/g" /etc/init.d/mongod${c}
+echo "mount {
+    cpuset  = /cgroup/cpuset;
+    cpu     = /cgroup/cpu;
+    cpuacct = /cgroup/cpuacct;
+    memory  = /cgroup/memory;
+    devices = /cgroup/devices;
+  }
 
-      echo "mount {
-            cpuset  = /cgroup/cpuset;
-            cpu     = /cgroup/cpu;
-            cpuacct = /cgroup/cpuacct;
-            memory  = /cgroup/memory;
-            devices = /cgroup/devices;
-          }
-
-          group mongod${c} {
-            perm {
-              admin {
-                uid = mongod;
-                gid = mongod;
-              }
-              task {
-                uid = mongod;
-                gid = mongod;
-              }
-            }
-            memory {
-              memory.limit_in_bytes = ${memory}G;
-              }
-          }" >> /etc/cgconfig.conf
-
-
-      echo CGROUP_DAEMON="memory:mongod${c}" > /etc/sysconfig/mongod${c}
-
-      (( c++ ))
-    done
-else #Karthik
- cp mongod.conf /etc/mongod.conf
- sed -i "s/.*port:.*/  port: ${port}/g" /etc/mongod.conf
- echo "replication:" >> /etc/mongod.conf
- echo "  replSetName: ${SHARD}" >> /etc/mongod.conf
-
- echo CGROUP_DAEMON="memory:mongod" > /etc/sysconfig/mongod
-
-  echo "mount {
-        cpuset  = /cgroup/cpuset;
-        cpu     = /cgroup/cpu;
-        cpuacct = /cgroup/cpuacct;
-        memory  = /cgroup/memory;
-        devices = /cgroup/devices;
+  group mongod {
+    perm {
+      admin {
+        uid = mongod;
+        gid = mongod;
       }
-
-      group mongod {
-        perm {
-          admin {
-            uid = mongod;
-            gid = mongod;
-          }
-          task {
-            uid = mongod;
-            gid = mongod;
-          }
-        }
-        memory {
-          memory.limit_in_bytes = ${memory}G;
-          }
-      }" > /etc/cgconfig.conf
-
-  fi
+      task {
+        uid = mongod;
+        gid = mongod;
+      }
+    }
+    memory {
+      memory.limit_in_bytes = ${memory}G;
+      }
+  }" > /etc/cgconfig.conf
 
 
 #################################################################
@@ -362,21 +289,9 @@ service cgconfig start
 chkconfig munin-node on
 service munin-node start
 
-#  Handle case when core sharding count is 0 - Karthik
-if [ "${MICROSHARDS}" != "0" ]; then
-  c=0
-  while [ $c -lt $MICROSHARDS ]
-  do
-      chkconfig mongod${c} on
-      enable_all_listen
-      service mongod${c} start
-      (( c++ ))
-  done
-else
-  chkconfig mongod on
-  enable_all_listen
-  service mongod start
-fi
+chkconfig mongod on
+enable_all_listen
+service mongod start
 
 #################################################################
 #  Primaries initiate replica sets
@@ -411,47 +326,7 @@ EOF
     # Configure the replica sets, set this host as Primary with
     # highest priority
     #################################################################
-    if [ ${MICROSHARDS} -gt 0 ]; then
-        port=27018
-        c=0
-        while [ $c -lt ${MICROSHARDS} ]; do
-
-            conf="{\"_id\" : \"${SHARD}-rs${c}\", \"version\" : 1, \"members\" : ["
-            node=1
-            for addr in "${IPADDRS[@]}"
-            do
-                addr="${addr%\"}"
-                addr="${addr#\"}"
-
-                priority=5
-                if [ "${addr}" == "${IP}" ]; then
-                    priority=10
-                fi
-                conf="${conf}{\"_id\" : ${node}, \"host\" :\"${addr}:${port}\", \"priority\":${priority}}"
-
-                if [ $node -lt ${NODES} ]; then
-                    conf=${conf}","
-                fi
-
-                (( node++ ))
-            done
-
-            conf=${conf}"]}"
-            echo ${conf}
-
-mongo --port ${port} << EOF
-rs.initiate(${conf})
-EOF
-
-            if [ $? -ne 0 ]; then
-                # Houston, we've had a problem here...
-                ./signalFinalStatus.sh 1
-            fi
-
-            (( port++ ))
-            (( c++ ))
-        done
-    elif [ "${NODES}" == "3" ]; then
+    if [ "${NODES}" == "3" ]; then
         port=27017
         conf="{\"_id\" : \"${SHARD}\", \"version\" : 1, \"members\" : ["
         node=1
@@ -484,8 +359,8 @@ EOF
             # Houston, we've had a problem here...
             ./signalFinalStatus.sh 1
         fi
-        else
-            port=27017
+    else
+        port=27017
 mongo --port ${port} << EOF
 rs.initiate()
 EOF

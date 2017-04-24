@@ -99,8 +99,8 @@
             "ConstraintDescription": "must begin with a letter and contain only alphanumeric characters."
         },
         "MongoDBAdminPassword": {
-            "AllowedPattern": "([A-Za-z0-9_!@#$%^&*-]{8,32})",
-            "ConstraintDescription": "Input your MongoDB database password, Min 8, Maximum of 32 characters.",
+            "AllowedPattern": "([A-Za-z0-9_@-]{8,32})",
+            "ConstraintDescription": "Input your MongoDB database password, Min 8, Maximum of 32 characters. . Allowed characters are: [A-Za-z0-9_@-]",
             "Description": "Enter your MongoDB Database Password, Min 8, maximum of 32 characters.",
             "NoEcho": "true",
             "Type": "String"
@@ -878,6 +878,37 @@
                 },
                 "Timeout": "3600"
             }
+        }
+    },
+    "Outputs": {
+        "PrimaryReplicaNodeIp": {
+            "Value": {
+                "Fn::GetAtt": [
+                    "PrimaryReplicaNode0",
+                    "Outputs.NodePrivateIp"
+                ]
+            },
+            "Description": "Private IP Address of Primary Replica Node"
+        },
+        "SecondaryReplicaNode0Ip": {
+            "Value": {
+                "Fn::GetAtt": [
+                    "SecondaryReplicaNode0",
+                    "Outputs.NodePrivateIp"
+                ]
+            },
+            "Description": "Private IP Address of Secondary Replica 0 Node",
+            "Condition" : "IfSecondaryReplicaNode0"
+        },
+        "SecondaryReplicaNode1Ip": {
+            "Value": {
+                "Fn::GetAtt": [
+                    "SecondaryReplicaNode1",
+                    "Outputs.NodePrivateIp"
+                ]
+            },
+            "Description": "Private IP Address of Secondary Replica 1 Node",
+            "Condition" : "IfSecondaryReplicaNode0"
         }
     }
 }
