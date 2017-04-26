@@ -560,6 +560,7 @@
                     "EnableBanner": {
                         "Ref": "EnableBanner"
                     },
+					"EnableTCPForwarding": "true",
                     "KeyPairName": {
                         "Ref": "KeyPairName"
                     },
@@ -657,7 +658,7 @@
                     "Iops": {
                         "Ref": "Iops"
                     },
-                    "KeyName": {
+                    "KeyPairName": {
                         "Ref": "KeyPairName"
                     },
                     "MongoDBVersion": {

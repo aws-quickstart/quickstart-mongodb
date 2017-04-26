@@ -21,7 +21,7 @@
                         "default": "Security Configuration"
                     },
                     "Parameters": [
-                        "KeyName"
+                        "KeyPairName"
                     ]
                 },
                 {
@@ -102,10 +102,10 @@
             "Type": "String",
             "Default": "quickstart-reference/mongodb/latest"
         },
-        "KeyName": {
+        "KeyPairName": {
             "Type": "AWS::EC2::KeyPair::KeyName",
             "Default": "home",
-            "Description": "Name of an existing EC2 KeyPair. MondoDB instances will launch with this KeyPair."
+            "Description": "Name of an existing EC2 KeyPair. MongoDB instances will launch with this KeyPair."
         },
         "VolumeSize": {
             "Type": "String",
@@ -518,7 +518,7 @@
                         "Ref": "Iops"
                     },
                     "KeyName": {
-                        "Ref": "KeyName"
+                        "Ref": "KeyPairName"
                     },
                     "MongoDBVersion": {
                         "Ref": "MongoDBVersion"
@@ -627,7 +627,7 @@
                         "Ref": "Iops"
                     },
                     "KeyName": {
-                        "Ref": "KeyName"
+                        "Ref": "KeyPairName"
                     },
                     "MongoDBVersion": {
                         "Ref": "MongoDBVersion"
@@ -737,7 +737,7 @@
                         "Ref": "Iops"
                     },
                     "KeyName": {
-                        "Ref": "KeyName"
+                        "Ref": "KeyPairName"
                     },
                     "MongoDBVersion": {
                         "Ref": "MongoDBVersion"

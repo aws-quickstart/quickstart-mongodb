@@ -94,7 +94,7 @@
         "KeyName": {
             "Type": "AWS::EC2::KeyPair::KeyName",
             "Default": "home",
-            "Description": "Name of an existing EC2 KeyPair. MondoDB instances will launch with this KeyPair."
+            "Description": "Name of an existing EC2 KeyPair. MongoDB instances will launch with this KeyPair."
         },
         "ClusterReplicaSetCount": {
             "Description": "Number of Replica Set Members. Choose 1 or 3",
