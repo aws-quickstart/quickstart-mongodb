@@ -30,14 +30,13 @@
                     },
                     "Parameters": [
                         "ClusterReplicaSetCount",
-                        "ClusterShardCount",
                         "ConfigServerInstanceType",
                         "Iops",
                         "MongoDBVersion",
                         "MongoDBAdminUsername",
                         "MongoDBAdminPassword",
                         "NodeInstanceType",
-                        "ShardsPerNode",
+                        "ReplicaShardIndex",
                         "VolumeSize",
                         "VolumeType"
                     ]
@@ -67,25 +66,13 @@
                 "3"
             ]
         },
-        "ClusterShardCount": {
-            "Description": "Number of Shards [0,1,2,3]. 0==No Sharding. Set to > 1 for Sharding",
-            "Type": "String",
-            "Default": "0",
-            "AllowedValues": [
-                "0",
-                "1",
-                "2",
-                "3"
-            ]
-        },
         "MongoDBVersion": {
             "Description": "MongoDB version",
             "Type": "String",
-            "Default": "3.2",
+            "Default": "3.4",
             "AllowedValues": [
                 "3.4",
-                "3.2",
-                "3.0"
+                "3.2"
             ]
         },
         "MongoDBAdminUsername": {
@@ -105,29 +92,10 @@
             "NoEcho": "true",
             "Type": "String"
         },
-        "ShardsPerNode": {
-            "Description": "Number of Micro Shards Per Node",
+        "ReplicaShardIndex": {
+            "Description": "Shard Index of this replica set",
             "Type": "String",
-            "Default": "0",
-            "AllowedValues": [
-                "0",
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "10",
-                "11",
-                "12",
-                "13",
-                "14",
-                "15",
-                "16"
-            ]
+            "Default": "0"
         },
         "BuildBucket": {
             "Description": "Main Bucket where the templates/scripts are installed. Do not change.",
@@ -239,38 +207,12 @@
         }
     },
     "Conditions": {
-        "CreateSingleReplicaSet": {
-            "Fn::Equals": [
-                {
-                    "Ref": "ClusterReplicaSetCount"
-                },
-                "1"
-            ]
-        },
         "CreateThreeReplicaSet": {
             "Fn::Equals": [
                 {
                     "Ref": "ClusterReplicaSetCount"
                 },
                 "3"
-            ]
-        },
-        "CreateNoShard": {
-            "Fn::Equals": [
-                {
-                    "Ref": "ClusterShardCount"
-                },
-                "0"
-            ]
-        },
-        "IfSecondaryReplicaNode0": {
-            "Fn::And": [
-                {
-                    "Condition": "CreateNoShard"
-                },
-                {
-                    "Condition": "CreateThreeReplicaSet"
-                }
             ]
         }
     },
@@ -539,12 +481,10 @@
         },
         "PrimaryReplicaNode0WaitForNodeInstallWaitHandle": {
             "Type": "AWS::CloudFormation::WaitConditionHandle",
-            "Properties": {},
-            "Condition": "CreateNoShard"
+            "Properties": {}
         },
         "PrimaryReplicaNode0": {
             "DependsOn": "PrimaryReplicaNode0WaitForNodeInstallWaitHandle",
-            "Condition": "CreateNoShard",
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -573,9 +513,6 @@
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
-                    },
-                    "ClusterShardCount": {
-                        "Ref": "ClusterShardCount"
                     },
                     "Iops": {
                         "Ref": "Iops"
@@ -607,9 +544,6 @@
                     "MongoDBNodeIAMProfileID": {
                         "Ref": "MongoDBNodeIAMProfile"
                     },
-                    "ShardsPerNode": {
-                        "Ref": "ShardsPerNode"
-                    },
                     "VPC": {
                         "Ref": "VPC"
                     },
@@ -633,7 +567,9 @@
                     },
                     "ReplicaNodeNameTag": "PrimaryReplicaNode0",
                     "NodeReplicaSetIndex": "0",
-                    "NodeShardIndex": "-1",
+                    "ReplicaShardIndex": {
+                        "Ref": "ReplicaShardIndex"
+                    },
                     "ReplicaNodeWaitForNodeInstallWaitHandle": {
                         "Ref": "PrimaryReplicaNode0WaitForNodeInstallWaitHandle"
                     }
@@ -642,7 +578,6 @@
         },
         "PrimaryReplicaNode0WaitForNodeInstall": {
             "Type": "AWS::CloudFormation::WaitCondition",
-            "Condition": "CreateNoShard",
             "DependsOn": "PrimaryReplicaNode0",
             "Properties": {
                 "Handle": {
@@ -654,11 +589,11 @@
         "SecondaryReplicaNode0WaitForNodeInstallWaitHandle": {
             "Type": "AWS::CloudFormation::WaitConditionHandle",
             "Properties": {},
-            "Condition": "IfSecondaryReplicaNode0"
+            "Condition": "CreateThreeReplicaSet"
         },
         "SecondaryReplicaNode0": {
             "DependsOn": "SecondaryReplicaNode0WaitForNodeInstallWaitHandle",
-            "Condition": "IfSecondaryReplicaNode0",
+            "Condition": "CreateThreeReplicaSet",
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -687,9 +622,6 @@
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
-                    },
-                    "ClusterShardCount": {
-                        "Ref": "ClusterShardCount"
                     },
                     "Iops": {
                         "Ref": "Iops"
@@ -721,9 +653,6 @@
                     "MongoDBNodeIAMProfileID": {
                         "Ref": "MongoDBNodeIAMProfile"
                     },
-                    "ShardsPerNode": {
-                        "Ref": "ShardsPerNode"
-                    },
                     "VPC": {
                         "Ref": "VPC"
                     },
@@ -747,7 +676,9 @@
                     },
                     "ReplicaNodeNameTag": "SecondaryReplicaNode0",
                     "NodeReplicaSetIndex": "1",
-                    "NodeShardIndex": "-1",
+                    "ReplicaShardIndex": {
+                        "Ref": "ReplicaShardIndex"
+                    },
                     "ReplicaNodeWaitForNodeInstallWaitHandle": {
                         "Ref": "SecondaryReplicaNode0WaitForNodeInstallWaitHandle"
                     }
@@ -756,7 +687,7 @@
         },
         "SecondaryReplicaNode0WaitForNodeInstall": {
             "Type": "AWS::CloudFormation::WaitCondition",
-            "Condition": "IfSecondaryReplicaNode0",
+            "Condition": "CreateThreeReplicaSet",
             "DependsOn": "SecondaryReplicaNode0",
             "Properties": {
                 "Handle": {
@@ -768,11 +699,11 @@
         "SecondaryReplicaNode1WaitForNodeInstallWaitHandle": {
             "Type": "AWS::CloudFormation::WaitConditionHandle",
             "Properties": {},
-            "Condition": "IfSecondaryReplicaNode0"
+            "Condition": "CreateThreeReplicaSet"
         },
         "SecondaryReplicaNode1": {
             "DependsOn": "SecondaryReplicaNode1WaitForNodeInstallWaitHandle",
-            "Condition": "IfSecondaryReplicaNode0",
+            "Condition": "CreateThreeReplicaSet",
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -801,9 +732,6 @@
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
-                    },
-                    "ClusterShardCount": {
-                        "Ref": "ClusterShardCount"
                     },
                     "Iops": {
                         "Ref": "Iops"
@@ -835,9 +763,6 @@
                     "MongoDBNodeIAMProfileID": {
                         "Ref": "MongoDBNodeIAMProfile"
                     },
-                    "ShardsPerNode": {
-                        "Ref": "ShardsPerNode"
-                    },
                     "VPC": {
                         "Ref": "VPC"
                     },
@@ -861,7 +786,9 @@
                     },
                     "ReplicaNodeNameTag": "SecondaryReplicaNode1",
                     "NodeReplicaSetIndex": "2",
-                    "NodeShardIndex": "-1",
+                    "ReplicaShardIndex": {
+                        "Ref": "ReplicaShardIndex"
+                    },
                     "ReplicaNodeWaitForNodeInstallWaitHandle": {
                         "Ref": "SecondaryReplicaNode1WaitForNodeInstallWaitHandle"
                     }
@@ -870,7 +797,7 @@
         },
         "SecondaryReplicaNode1WaitForNodeInstall": {
             "Type": "AWS::CloudFormation::WaitCondition",
-            "Condition": "IfSecondaryReplicaNode0",
+            "Condition": "CreateThreeReplicaSet",
             "DependsOn": "SecondaryReplicaNode1",
             "Properties": {
                 "Handle": {
@@ -898,7 +825,7 @@
                 ]
             },
             "Description": "Private IP Address of Secondary Replica 0 Node",
-            "Condition": "IfSecondaryReplicaNode0"
+            "Condition": "CreateThreeReplicaSet"
         },
         "SecondaryReplicaNode1Ip": {
             "Value": {
@@ -908,7 +835,7 @@
                 ]
             },
             "Description": "Private IP Address of Secondary Replica 1 Node",
-            "Condition": "IfSecondaryReplicaNode0"
+            "Condition": "CreateThreeReplicaSet"
         }
     }
 }

@@ -50,14 +50,13 @@
                     },
                     "Parameters": [
 						"ClusterReplicaSetCount",
-						"ClusterShardCount",
 						"ConfigServerInstanceType",
 						"Iops",
 						"MongoDBVersion",
 						"MongoDBAdminUsername",
 						"MongoDBAdminPassword",
 						"NodeInstanceType",
-						"ShardsPerNode",
+						"ReplicaShardIndex",
 						"VolumeSize",
 						"VolumeType"
                     ]
@@ -290,13 +289,12 @@
 	        ]
 	    },
 	    "MongoDBVersion": {
-	        "Default": "3.2",
+	        "Default": "3.4",
 	        "Type": "String",
 	        "Description": "MongoDB version",
 	        "AllowedValues": [
-	            "3.2",
-                "3.4",
-	            "3.0"
+	            "3.4",
+                "3.2"
 	        ]
 	    },
 		"MongoDBAdminUsername": {
@@ -325,41 +323,11 @@
 	            "3"
 	        ]
 	    },
-	    "ClusterShardCount": {
-	        "Default": "0",
-	        "Type": "String",
-	        "Description": "Number of Shards [0,1,2,3]. 0==No Sharding. Set to > 1 for Sharding",
-	        "AllowedValues": [
-	            "0",
-	            "1",
-	            "2",
-	            "3"
-	        ]
-	    },
-	    "ShardsPerNode": {
-	        "Default": "0",
-	        "Type": "String",
-	        "Description": "Number of Micro Shards Per Node",
-	        "AllowedValues": [
-	            "0",
-	            "1",
-	            "2",
-	            "3",
-	            "4",
-	            "5",
-	            "6",
-	            "7",
-	            "8",
-	            "9",
-	            "10",
-	            "11",
-	            "12",
-	            "13",
-	            "14",
-	            "15",
-	            "16"
-	        ]
-	    },
+		"ReplicaShardIndex": {
+			"Description": "Shard Index of this replica set",
+			"Type": "String",
+			"Default": "0"
+		},
 	    "ConfigServerInstanceType": {
 	        "Default": "t2.micro",
 	        "Type": "String",
@@ -397,42 +365,12 @@
 	    }
 	},
     "Conditions": {
-		"CreateNoShard": {
-			"Fn::Equals": [
-				{
-					"Ref": "ClusterShardCount"
-				},
-				"0"
-			]
-		},
-		"CreateMinOneShard": {
-			"Fn::Not": [
-				{
-					"Fn::Equals": [
-						{
-							"Ref": "ClusterShardCount"
-						},
-						"0"
-					]
-				}
-			]
-		},
 		"CreateThreeReplicaSet": {
 			"Fn::Equals": [
 				{
 					"Ref": "ClusterReplicaSetCount"
 				},
 				"3"
-			]
-		},
-		"IfSecondaryReplicaNode0": {
-			"Fn::And": [
-				{
-					"Condition": "CreateNoShard"
-				},
-				{
-					"Condition": "CreateThreeReplicaSet"
-				}
 			]
 		},
         "RepeatSubnet": {
@@ -686,13 +624,7 @@
                             {
                                 "Ref": "QSS3KeyPrefix"
                             },
-                            {
-                                "Fn::If": [
-                                    "CreateNoShard",
-                                    "templates/mongodb-database.template",
-                                    "templates/mongodb-database-sharded.template"
-                                ]
-                            }
+                            "templates/mongodb-database.template"
                         ]
                     ]
                 },
@@ -718,9 +650,6 @@
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
-                    },
-                    "ClusterShardCount": {
-                        "Ref": "ClusterShardCount"
                     },
                     "ConfigServerInstanceType": {
                         "Ref": "ConfigServerInstanceType"
@@ -772,8 +701,8 @@
                             }
                         ]
                     },
-                    "ShardsPerNode": {
-                        "Ref": "ShardsPerNode"
+                    "ReplicaShardIndex": {
+                        "Ref": "ReplicaShardIndex"
                     },
                     "VPC": {
                         "Fn::GetAtt": [
@@ -809,7 +738,7 @@
 				]
 			},
 			"Description": "Private IP Address of Secondary Replica 0 Node",
-			"Condition" : "IfSecondaryReplicaNode0"
+			"Condition" : "CreateThreeReplicaSet"
 		},
 		"SecondaryReplicaNode1Ip": {
 			"Value": {
@@ -819,7 +748,7 @@
 				]
 			},
 			"Description": "Private IP Address of Secondary Replica 1 Node",
-			"Condition" : "IfSecondaryReplicaNode0"
+			"Condition" : "CreateThreeReplicaSet"
 		}
 	}
 }

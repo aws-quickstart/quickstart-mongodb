@@ -64,7 +64,7 @@
             "Description": "Instance Index",
             "Type": "String"
         },
-        "NodeShardIndex": {
+        "ReplicaShardIndex": {
             "Description": "Shard Index",
             "Type": "String"
         },
@@ -105,49 +105,13 @@
                 "3"
             ]
         },
-        "ClusterShardCount": {
-            "Description": "Number of Shards [0,1,2,3]. 0==No Sharding. Set to > 1 for Sharding",
-            "Type": "String",
-            "Default": "0",
-            "AllowedValues": [
-                "0",
-                "1",
-                "2",
-                "3"
-            ]
-        },
-        "ShardsPerNode": {
-            "Description": "Number of Micro Shards Per Node",
-            "Type": "String",
-            "Default": "0",
-            "AllowedValues": [
-                "0",
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "10",
-                "11",
-                "12",
-                "13",
-                "14",
-                "15",
-                "16"
-            ]
-        },
         "MongoDBVersion": {
             "Description": "MongoDB version",
             "Type": "String",
-            "Default": "3.2",
+            "Default": "3.4",
             "AllowedValues": [
                 "3.4",
-                "3.2",
-                "3.0"
+                "3.2"
             ]
         },
         "MongoDBAdminUsername": {
@@ -184,14 +148,6 @@
                     "Ref": "VolumeType"
                 },
                 "io1"
-            ]
-        },
-        "CreateNoShard": {
-            "Fn::Equals": [
-                {
-                    "Ref": "ClusterShardCount"
-                },
-                "0"
             ]
         }
     },
@@ -263,21 +219,9 @@
                         }
                     },
                     {
-                        "Key": "ClusterShardCount",
+                        "Key": "ReplicaShardIndex",
                         "Value": {
-                            "Ref": "ClusterShardCount"
-                        }
-                    },
-                    {
-                        "Key": "ShardsPerNode",
-                        "Value": {
-                            "Ref": "ShardsPerNode"
-                        }
-                    },
-                    {
-                        "Key": "NodeShardIndex",
-                        "Value": {
-                            "Ref": "NodeShardIndex"
+                            "Ref": "ReplicaShardIndex"
                         }
                     }
                 ],
@@ -354,15 +298,7 @@
                                 {
                                     "Ref": "BuildBucket"
                                 },
-                                "/scripts/",
-                                {
-                                    "Fn::If": [
-                                        "CreateNoShard",
-                                        "init_replica.sh",
-                                        "init.sh"
-                                    ]
-                                },
-                                " init.sh\n",
+                                "/scripts/init_replica.sh init.sh\n",
                                 "aws s3 cp s3://",
                                 {
                                     "Ref": "BuildBucket"
