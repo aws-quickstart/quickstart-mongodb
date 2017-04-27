@@ -30,7 +30,6 @@
                     },
                     "Parameters": [
                         "ClusterReplicaSetCount",
-                        "ConfigServerInstanceType",
                         "Iops",
                         "MongoDBVersion",
                         "MongoDBAdminUsername",
@@ -49,7 +48,57 @@
                         "BuildBucket"
                     ]
                 }
-            ]
+            ],
+            "ParameterLabels": {
+                "BastionSecurityGroupID": {
+                    "default": "Bastion Security Group ID"
+                },
+                "BuildBucket": {
+                    "default": "Build Bucket"
+                },
+                "ClusterReplicaSetCount": {
+                    "default": "Cluster Replica Set Count"
+                },
+                "Iops": {
+                    "default": "Iops"
+                },
+                "KeyPairName": {
+                    "default": "Key Pair Name"
+                },
+                "MongoDBAdminPassword": {
+                    "default": "MongoDB Admin Password"
+                },
+                "MongoDBAdminUsername": {
+                    "default": "MongoDB Admin Username"
+                },
+                "MongoDBVersion": {
+                    "default": "MongoDB Version"
+                },
+                "NodeInstanceType": {
+                    "default": "Node Instance Type"
+                },
+                "PrimaryNodeSubnet": {
+                    "default": "Primary Node Subnet"
+                },
+                "ReplicaShardIndex": {
+                    "default": "Replica Shard Index"
+                },
+                "Secondary0NodeSubnet": {
+                    "default": "Secondary0 Node Subnet"
+                },
+                "Secondary1NodeSubnet": {
+                    "default": "Secondary1 Node Subnet"
+                },
+                "VPC": {
+                    "default": "VPC"
+                },
+                "VolumeSize": {
+                    "default": "Volume Size"
+                },
+                "VolumeType": {
+                    "default": "Volume Type"
+                }
+            }
         }
     },
     "Parameters": {
@@ -125,36 +174,6 @@
             "Type": "String",
             "Description": "Iops of EBS volume when io1 type is chosen. Otherwise ignored",
             "Default": "100"
-        },
-        "ConfigServerInstanceType": {
-            "Description": "Amazon EC2 instance type for the Config Server",
-            "Type": "String",
-            "Default": "t2.micro",
-            "AllowedValues": [
-                "t2.micro",
-                "m3.medium",
-                "m3.large",
-                "m3.xlarge",
-                "m3.2xlarge",
-                "m4.large",
-                "m4.2xlarge",
-                "m4.4xlarge",
-                "m4.10xlarge",
-                "c3.large",
-                "c3.xlarge",
-                "c3.2xlarge",
-                "c3.4xlarge",
-                "c3.8xlarge",
-                "r3.large",
-                "r3.xlarge",
-                "r3.2xlarge",
-                "r3.4xlarge",
-                "r3.8xlarge",
-                "i2.xlarge",
-                "i2.2xlarge",
-                "i2.4xlarge",
-                "i2.8xlarge"
-            ]
         },
         "NodeInstanceType": {
             "Description": "Amazon EC2 instance type for the MongoDB nodes.",

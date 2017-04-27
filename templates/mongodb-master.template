@@ -50,7 +50,6 @@
                     },
                     "Parameters": [
 						"ClusterReplicaSetCount",
-						"ConfigServerInstanceType",
 						"Iops",
 						"MongoDBVersion",
 						"MongoDBAdminUsername",
@@ -70,7 +69,99 @@
                         "QSS3KeyPrefix"
                     ]
                 }
-            ]
+            ],
+			"ParameterLabels": {
+				"AvailabilityZones": {
+					"default": "Availability Zones"
+				},
+				"BastionAMIOS": {
+					"default": "Bastion AMI Operating System"
+				},
+				"BastionBanner": {
+					"default": "Bastion Banner"
+				},
+				"BastionInstanceType": {
+					"default": "Bastion Instance Type"
+				},
+				"ClusterReplicaSetCount": {
+					"default": "Cluster Replica Set Count"
+				},
+				"EnableBanner": {
+					"default": "Enable Banner"
+				},
+				"Iops": {
+					"default": "Iops"
+				},
+				"KeyPairName": {
+					"default": "Key Pair Name"
+				},
+				"NumBastionHosts": {
+					"default": "Number of Bastion Hosts"
+				},
+				"MongoDBAdminPassword": {
+					"default": "MongoDB Admin Password"
+				},
+				"MongoDBAdminUsername": {
+					"default": "MongoDB Admin Username"
+				},
+				"MongoDBVersion": {
+					"default": "MongoDB Version"
+				},
+				"NATInstanceType": {
+					"default": "NAT Instance Type"
+				},
+				"NodeInstanceType": {
+					"default": "Node Instance Type"
+				},
+				"NumberOfAZs": {
+					"default": "Number Of AZs"
+				},
+				"PrimaryIPAddress": {
+					"default": "Primary IP Address"
+				},
+				"PrivateSubnet1CIDR": {
+					"default": "Private Subnet1 CIDR"
+				},
+				"PrivateSubnet2CIDR": {
+					"default": "Private Subnet2 CIDR"
+				},
+				"PrivateSubnet3CIDR": {
+					"default": "Private Subnet3 CIDR"
+				},
+				"PublicSubnet1CIDR": {
+					"default": "Public Subnet1 CIDR"
+				},
+				"PublicSubnet2CIDR": {
+					"default": "PublicSubnet2CIDR"
+				},
+				"PublicSubnet3CIDR": {
+					"default": "Public Subnet3 CIDR"
+				},
+				"QSS3BucketName": {
+					"default": "Quick Start S3 Bucket Name"
+				},
+				"QSS3KeyPrefix": {
+					"default": "Quick Start S3 Key Prefix"
+				},
+				"RemoteAccessCIDR": {
+					"default": "Allowed Bastion External Access CIDR"
+				},
+				"ReplicaShardIndex": {
+					"default": "Replica Shard Index"
+				},
+				"StandbyIPAddress": {
+					"default": "Standby IP Address"
+				},
+				"VolumeSize": {
+					"default": "Volume Size"
+				},
+				"VolumeType": {
+					"default": "Volume Type"
+				},
+				"VPCCIDR": {
+					"default": "VPC CIDR"
+				}
+			}
         }
     },
     "Parameters": {
@@ -328,36 +419,6 @@
 			"Type": "String",
 			"Default": "0"
 		},
-	    "ConfigServerInstanceType": {
-	        "Default": "t2.micro",
-	        "Type": "String",
-	        "Description": "Amazon EC2 instance type for the Config Server",
-	        "AllowedValues": [
-	            "t2.micro",
-	            "m3.medium",
-	            "m3.large",
-	            "m3.xlarge",
-	            "m3.2xlarge",
-	            "m4.large",
-	            "m4.2xlarge",
-	            "m4.4xlarge",
-	            "m4.10xlarge",
-	            "c3.large",
-	            "c3.xlarge",
-	            "c3.2xlarge",
-	            "c3.4xlarge",
-	            "c3.8xlarge",
-	            "r3.large",
-	            "r3.xlarge",
-	            "r3.2xlarge",
-	            "r3.4xlarge",
-	            "r3.8xlarge",
-	            "i2.xlarge",
-	            "i2.2xlarge",
-	            "i2.4xlarge",
-	            "i2.8xlarge"
-	        ]
-	    },
 	    "Iops": {
 	        "Default": "100",
 	        "Type": "String",
@@ -651,9 +712,6 @@
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
-                    },
-                    "ConfigServerInstanceType": {
-                        "Ref": "ConfigServerInstanceType"
                     },
                     "Iops": {
                         "Ref": "Iops"
