@@ -231,12 +231,12 @@
             ]
         },
         "CreateThreeReplicaSet": {
-            "Fn::Equals": [
-                {
-                    "Ref": "ClusterReplicaSetCount"
-                },
-                "3"
-            ]
+            "Fn::Or" : [
+              {"Fn::Equals": [{ "Ref": "ClusterReplicaSetCount"}, "3"]},
+              {"Fn::Equals": [{ "Ref": "ClusterShardCount"}, "1"]},
+              {"Fn::Equals": [{ "Ref": "ClusterShardCount"}, "2"]},
+              {"Fn::Equals": [{ "Ref": "ClusterShardCount"}, "3"]}
+           ]
         },
         "CreateNoShard": {
             "Fn::Equals": [
