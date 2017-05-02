@@ -647,7 +647,7 @@
                                 {
                                     "Ref": "QSS3KeyPrefix"
                                 },
-                                "submodules/quickstart-linux-bastion"
+                                "submodules/quickstart-linux-bastion/"
                             ]
                         ]
                     },
