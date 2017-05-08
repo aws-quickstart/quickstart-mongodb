@@ -135,10 +135,19 @@
             "Description": "Pre-signed Wait Handle URL to send signal for associated wait condition",
             "Type": "String"
         },
-        "BuildBucket": {
-            "Description": "Main Bucket where the templates/scripts are installed. Do not change.",
+        "QSS3BucketName": {
+            "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
+            "Default": "quickstart-reference",
             "Type": "String",
-            "Default": "quickstart-reference/mongodb/latest"
+            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+        },
+        "QSS3KeyPrefix": {
+            "AllowedPattern": "^[0-9a-zA-Z-/]*$",
+            "Default": "mongodb/latest/",
+            "Type": "String",
+            "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with a hyphen (-)."
         }
     },
     "Conditions": {
@@ -179,7 +188,21 @@
         "ReplicaNodeInstance": {
             "Type": "AWS::EC2::Instance",
             "Metadata": {
-                "HostRole": "MongoDB Node"
+                "HostRole": "MongoDB Node",
+                "AWS::CloudFormation::Init": {
+                    "config": {
+                        "files": {
+                            "/tmp/mongo_pass.txt": {
+                                "content": {
+                                    "Ref": "MongoDBAdminPassword"
+                                },
+                                "mode": "000440",
+                                "owner": "root",
+                                "group": "root"
+                            }
+                        }
+                    }
+                }
             },
             "Properties": {
                 "NetworkInterfaces": [
@@ -273,7 +296,17 @@
                         "Fn::Join": [
                             "",
                             [
-                                "#!/bin/bash -v\n",
+                                "#!/bin/bash\n",
+                                "/opt/aws/bin/cfn-init -v --stack ",
+                                {
+                                    "Ref": "AWS::StackName"
+                                },
+                                " --resource ReplicaNodeInstance ",
+                                " --region ",
+                                {
+                                    "Ref": "AWS::Region"
+                                },
+                                "\n",
                                 "mkdir -p /home/ec2-user/mongodb \n",
                                 "cd /home/ec2-user/mongodb \n",
                                 "# Wait until the NAT initializes and Internet is available \n",
@@ -283,27 +316,43 @@
                                 "done \n",
                                 "aws s3 cp s3://",
                                 {
-                                    "Ref": "BuildBucket"
+                                    "Ref": "QSS3BucketName"
                                 },
-                                "/scripts/orchestrator.sh orchestrator.sh\n",
+                                "/",
+                                {
+                                    "Ref": "QSS3KeyPrefix"
+                                },
+                                "scripts/orchestrator.sh orchestrator.sh\n",
                                 "chmod +x orchestrator.sh \n",
                                 "aws s3 cp s3://",
                                 {
-                                    "Ref": "BuildBucket"
+                                    "Ref": "QSS3BucketName"
                                 },
-                                "/scripts/disable-transparent-hugepages /etc/init.d/disable-transparent-hugepages\n",
+                                "/",
+                                {
+                                    "Ref": "QSS3KeyPrefix"
+                                },
+                                "scripts/disable-transparent-hugepages /etc/init.d/disable-transparent-hugepages\n",
                                 "chmod +x /etc/init.d/disable-transparent-hugepages \n",
                                 "chkconfig --add disable-transparent-hugepages \n",
                                 "aws s3 cp s3://",
                                 {
-                                    "Ref": "BuildBucket"
+                                    "Ref": "QSS3BucketName"
                                 },
-                                "/scripts/init_replica.sh init.sh\n",
+                                "/",
+                                {
+                                    "Ref": "QSS3KeyPrefix"
+                                },
+                                "scripts/init_replica.sh init.sh\n",
                                 "aws s3 cp s3://",
                                 {
-                                    "Ref": "BuildBucket"
+                                    "Ref": "QSS3BucketName"
                                 },
-                                "/scripts/signalFinalStatus.sh signalFinalStatus.sh\n",
+                                "/",
+                                {
+                                    "Ref": "QSS3KeyPrefix"
+                                },
+                                "scripts/signalFinalStatus.sh signalFinalStatus.sh\n",
                                 "chmod +x signalFinalStatus.sh \n",
                                 "chmod +x init.sh \n",
                                 "#  Run the install \n",
@@ -377,11 +426,6 @@
                                     ]
                                 },
                                 " >> config.sh\n",
-                                "echo ",
-                                {
-                                    "Ref": "MongoDBAdminPassword"
-                                },
-                                " >> /tmp/mongo_pass.txt\n",
                                 "mkdir -p /mongo_auth \n",
                                 "./init.sh > install.log 2>&1 \n",
                                 "#  Cleanup \n",

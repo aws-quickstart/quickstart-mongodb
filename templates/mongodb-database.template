@@ -45,16 +45,14 @@
                         "default": "AWS Quick Start Configuration"
                     },
                     "Parameters": [
-                        "BuildBucket"
+                        "QSS3BucketName",
+                        "QSS3KeyPrefix"
                     ]
                 }
             ],
             "ParameterLabels": {
                 "BastionSecurityGroupID": {
                     "default": "Bastion Security Group ID"
-                },
-                "BuildBucket": {
-                    "default": "Build Bucket"
                 },
                 "ClusterReplicaSetCount": {
                     "default": "Cluster Replica Set Count"
@@ -79,6 +77,12 @@
                 },
                 "PrimaryNodeSubnet": {
                     "default": "Primary Node Subnet"
+                },
+                "QSS3BucketName": {
+                    "default": "Quick Start S3 Bucket Name"
+                },
+                "QSS3KeyPrefix": {
+                    "default": "Quick Start S3 Key Prefix"
                 },
                 "ReplicaShardIndex": {
                     "default": "Replica Shard Index"
@@ -146,10 +150,19 @@
             "Type": "String",
             "Default": "0"
         },
-        "BuildBucket": {
-            "Description": "Main Bucket where the templates/scripts are installed. Do not change.",
+        "QSS3BucketName": {
+            "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
+            "Default": "quickstart-reference",
             "Type": "String",
-            "Default": "quickstart-reference/mongodb/latest"
+            "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
+            "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+        },
+        "QSS3KeyPrefix": {
+            "AllowedPattern": "^[0-9a-zA-Z-/]*$",
+            "Default": "mongodb/latest/",
+            "Type": "String",
+            "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
+            "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with a hyphen (-)."
         },
         "KeyPairName": {
             "Type": "AWS::EC2::KeyPair::KeyName",
@@ -233,6 +246,14 @@
                 },
                 "3"
             ]
+        },
+        "GovCloudCondition": {
+            "Fn::Equals": [
+                {
+                    "Ref": "AWS::Region"
+                },
+                "us-gov-west-1"
+            ]
         }
     },
     "Mappings": {
@@ -281,68 +302,6 @@
             },
             "us-west-2": {
                 "AMZNLINUX": "ami-4836a428"
-            }
-        },
-        "AWSInfoRegionMap": {
-            "ap-northeast-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "ap-northeast-2": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "ap-south-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "ap-southeast-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "ap-southeast-2": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "ca-central-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "eu-central-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "eu-west-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "eu-west-2": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "sa-east-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "us-east-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "us-east-2": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "us-gov-west-1": {
-                "Partition": "aws-us-gov",
-                "QuickStartS3URL": "https://s3-us-gov-west-1.amazonaws.com"
-            },
-            "us-west-1": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
-            },
-            "us-west-2": {
-                "Partition": "aws",
-                "QuickStartS3URL": "https://s3.amazonaws.com"
             }
         }
     },
@@ -507,28 +466,25 @@
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
-                    "Fn::Join": [
-                        "/",
-                        [
-                            {
-                                "Fn::FindInMap": [
-                                    "AWSInfoRegionMap",
-                                    {
-                                        "Ref": "AWS::Region"
-                                    },
-                                    "QuickStartS3URL"
+                    "Fn::Sub": [
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/mongodb-node.template",
+                        {
+                            "QSS3Region": {
+                                "Fn::If": [
+                                    "GovCloudCondition",
+                                    "s3-us-gov-west-1",
+                                    "s3"
                                 ]
-                            },
-                            {
-                                "Ref": "BuildBucket"
-                            },
-                            "templates/mongodb-node.template"
-                        ]
+                            }
+                        }
                     ]
                 },
                 "Parameters": {
-                    "BuildBucket": {
-                        "Ref": "BuildBucket"
+                    "QSS3BucketName": {
+                        "Ref": "QSS3BucketName"
+                    },
+                    "QSS3KeyPrefix": {
+                        "Ref": "QSS3KeyPrefix"
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
@@ -616,28 +572,25 @@
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
-                    "Fn::Join": [
-                        "/",
-                        [
-                            {
-                                "Fn::FindInMap": [
-                                    "AWSInfoRegionMap",
-                                    {
-                                        "Ref": "AWS::Region"
-                                    },
-                                    "QuickStartS3URL"
+                    "Fn::Sub": [
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/mongodb-node.template",
+                        {
+                            "QSS3Region": {
+                                "Fn::If": [
+                                    "GovCloudCondition",
+                                    "s3-us-gov-west-1",
+                                    "s3"
                                 ]
-                            },
-                            {
-                                "Ref": "BuildBucket"
-                            },
-                            "templates/mongodb-node.template"
-                        ]
+                            }
+                        }
                     ]
                 },
                 "Parameters": {
-                    "BuildBucket": {
-                        "Ref": "BuildBucket"
+                    "QSS3BucketName": {
+                        "Ref": "QSS3BucketName"
+                    },
+                    "QSS3KeyPrefix": {
+                        "Ref": "QSS3KeyPrefix"
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
@@ -726,28 +679,25 @@
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
-                    "Fn::Join": [
-                        "/",
-                        [
-                            {
-                                "Fn::FindInMap": [
-                                    "AWSInfoRegionMap",
-                                    {
-                                        "Ref": "AWS::Region"
-                                    },
-                                    "QuickStartS3URL"
+                    "Fn::Sub": [
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/mongodb-node.template",
+                        {
+                            "QSS3Region": {
+                                "Fn::If": [
+                                    "GovCloudCondition",
+                                    "s3-us-gov-west-1",
+                                    "s3"
                                 ]
-                            },
-                            {
-                                "Ref": "BuildBucket"
-                            },
-                            "templates/mongodb-node.template"
-                        ]
+                            }
+                        }
                     ]
                 },
                 "Parameters": {
-                    "BuildBucket": {
-                        "Ref": "BuildBucket"
+                    "QSS3BucketName": {
+                        "Ref": "QSS3BucketName"
+                    },
+                    "QSS3KeyPrefix": {
+                        "Ref": "QSS3KeyPrefix"
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
