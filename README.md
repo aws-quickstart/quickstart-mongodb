@@ -25,6 +25,6 @@ The following links are for your convenience. Before you launch the Quick Start,
 * Changed file system to xfs
 * Refactored template into nested modules.
   * mongodb-master.template - launches MongoDB replica set in a new VPC
-  * mongodb-database.template - launches MongoDB replica set in an existing VPC
+  * mongodb.template - launches MongoDB replica set in an existing VPC
   * mongodb-node.template - launches one node in MongoDB replica set
 * Added quickstart-aws-vpc and quickstart-linux-bastion as submodules

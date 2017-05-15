@@ -511,7 +511,7 @@
             "Properties": {
             	"TemplateURL": {
                     "Fn::Sub": [
-                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/mongodb-database.template",
+                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/mongodb.template",
                         {
                             "QSS3Region": {
                                 "Fn::If": [
