@@ -157,6 +157,11 @@
             "Description": "VPC-ID of your existing Virtual Private Cloud (VPC) where you want to depoy MongoDB cluster.",
             "AllowedPattern": "vpc-[0-9a-z]{8}"
         },
+        "VPCCIDR": {
+            "AllowedPattern": "[a-zA-Z0-9]+\\..+", 
+            "Description": "CIDR Block of the existing VPC", 
+            "Type": "String"
+        },         
         "PrimaryNodeSubnet": {
             "Type": "AWS::EC2::Subnet::Id",
             "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s).",
@@ -671,19 +676,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -1230,21 +1227,13 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
+                    },  
                     {
                         "IpProtocol": "tcp",
                         "FromPort": "22",
@@ -1791,19 +1780,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -2352,19 +2333,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -2913,19 +2886,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -3474,19 +3439,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -4035,19 +3992,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -4596,19 +4545,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -5157,19 +5098,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -5718,19 +5651,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -6279,19 +6204,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -6840,19 +6757,11 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
                     },
                     {
@@ -7401,13 +7310,13 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27030",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
-                    },
+                    },  
                     {
                         "IpProtocol": "tcp",
                         "FromPort": "22",
@@ -7697,13 +7606,13 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27030",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
-                    },
+                    },  
                     {
                         "IpProtocol": "tcp",
                         "FromPort": "22",
@@ -7993,13 +7902,13 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27030",
-                        "ToPort": "27030",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535",
                         "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
+                            "Ref": "VPCCIDR"
                         }
-                    },
+                    },  
                     {
                         "IpProtocol": "tcp",
                         "FromPort": "22",

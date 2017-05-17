@@ -231,12 +231,12 @@
             ]
         },
         "CreateThreeReplicaSet": {
-            "Fn::Equals": [
-                {
-                    "Ref": "ClusterReplicaSetCount"
-                },
-                "3"
-            ]
+            "Fn::Or" : [
+              {"Fn::Equals": [{ "Ref": "ClusterReplicaSetCount"}, "3"]},
+              {"Fn::Equals": [{ "Ref": "ClusterShardCount"}, "1"]},
+              {"Fn::Equals": [{ "Ref": "ClusterShardCount"}, "2"]},
+              {"Fn::Equals": [{ "Ref": "ClusterShardCount"}, "3"]}
+           ]
         },
         "CreateNoShard": {
             "Fn::Equals": [
@@ -814,92 +814,48 @@
             }
         },
         "NATSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
-                "GroupDescription": "Enable internal access to the NAT device",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "80",
-                        "ToPort": "80",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "443",
-                        "ToPort": "443",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "icmp",
-                        "FromPort": "8",
-                        "ToPort": "-1",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable internal access to the NAT device", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "tcp",
-                        "FromPort": "80",
-                        "ToPort": "80",
-                        "CidrIp": "0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "443",
-                        "ToPort": "443",
-                        "CidrIp": "0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "PrimaryReplicaSubnet"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "SecondaryReplicaSubnet0"
-                        }
-                    },
-                    {
-                        "IpProtocol": "icmp",
-                        "FromPort": "8",
-                        "ToPort": "-1",
-                        "CidrIp": "0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "SecondaryReplicaSubnet1"
-                        }
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
                     }
-                ]
-            }
-        },
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }, 
+                        "FromPort": "8", 
+                        "IpProtocol": "icmp", 
+                        "ToPort": "-1"
+                    }, 
+                    {
+                        "CidrIp": {
+                            "Ref": "RemoteAccessCIDR"
+                        }, 
+                        "FromPort": "22", 
+                        "IpProtocol": "tcp", 
+                        "ToPort": "22"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
+        }, 
         "DMZRouteTable": {
             "Type": "AWS::EC2::RouteTable",
             "Properties": {
@@ -1371,50 +1327,42 @@
             "DependsOn": "PrimaryNodeSubnet"
         },
         "PrimaryReplicaNode0NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "CreateNoShard", 
+            "DependsOn": "PrimaryNodeSubnet", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "CreateNoShard",
-            "DependsOn": "PrimaryNodeSubnet"
-        },
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
+        }, 
         "PrimaryReplicaNode0NodeIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -1938,48 +1886,40 @@
             "Condition": "CreateMinOneShard"
         },
         "PrimaryReplicaNode00NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "CreateMinOneShard", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "CreateMinOneShard"
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
         },
         "PrimaryReplicaNode00NodeIAMRole": {
             "Type": "AWS::IAM::Role",
@@ -2499,49 +2439,41 @@
             "Condition": "IfSecondaryReplicaNode0"
         },
         "SecondaryReplicaNode0NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "IfSecondaryReplicaNode0", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "IfSecondaryReplicaNode0"
-        },
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
+        }, 
         "SecondaryReplicaNode0NodeIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -3060,49 +2992,41 @@
             "Condition": "IfSecondaryReplicaNode00"
         },
         "SecondaryReplicaNode00NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "IfSecondaryReplicaNode00", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "IfSecondaryReplicaNode00"
-        },
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
+        }, 
         "SecondaryReplicaNode00NodeIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -3621,49 +3545,41 @@
             "Condition": "IfSecondaryReplicaNode1"
         },
         "SecondaryReplicaNode1NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "IfSecondaryReplicaNode1", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "IfSecondaryReplicaNode1"
-        },
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
+        }, 
         "SecondaryReplicaNode1NodeIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -4182,48 +4098,40 @@
             "Condition": "IfSecondaryReplicaNode01"
         },
         "SecondaryReplicaNode01NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "IfSecondaryReplicaNode01", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "IfSecondaryReplicaNode01"
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
         },
         "SecondaryReplicaNode01NodeIAMRole": {
             "Type": "AWS::IAM::Role",
@@ -4743,49 +4651,41 @@
             "Condition": "CreateMinTwoShards"
         },
         "PrimaryReplicaNode10NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "CreateMinTwoShards", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "CreateMinTwoShards"
-        },
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
+        }, 
         "PrimaryReplicaNode10NodeIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -5304,48 +5204,40 @@
             "Condition": "IfSecondaryReplicaNode10"
         },
         "SecondaryReplicaNode10NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "IfSecondaryReplicaNode10", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "IfSecondaryReplicaNode10"
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
         },
         "SecondaryReplicaNode10NodeIAMRole": {
             "Type": "AWS::IAM::Role",
@@ -5865,48 +5757,40 @@
             "Condition": "IfSecondaryReplicaNode11"
         },
         "SecondaryReplicaNode11NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "IfSecondaryReplicaNode11", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "IfSecondaryReplicaNode11"
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
         },
         "SecondaryReplicaNode11NodeIAMRole": {
             "Type": "AWS::IAM::Role",
@@ -6426,48 +6310,40 @@
             "Condition": "CreateMinThreeShards"
         },
         "PrimaryReplicaNode20NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "CreateMinThreeShards", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "CreateMinThreeShards"
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
         },
         "PrimaryReplicaNode20NodeIAMRole": {
             "Type": "AWS::IAM::Role",
@@ -6987,48 +6863,40 @@
             "Condition": "IfSecondaryReplicaNode20"
         },
         "SecondaryReplicaNode20NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "IfSecondaryReplicaNode20", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "IfSecondaryReplicaNode20"
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
         },
         "SecondaryReplicaNode20NodeIAMRole": {
             "Type": "AWS::IAM::Role",
@@ -7548,48 +7416,40 @@
             "Condition": "IfSecondaryReplicaNode21"
         },
         "SecondaryReplicaNode21NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "IfSecondaryReplicaNode21", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "IfSecondaryReplicaNode21"
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
         },
         "SecondaryReplicaNode21NodeIAMRole": {
             "Type": "AWS::IAM::Role",
@@ -8109,41 +7969,41 @@
             "Condition": "CreateMinOneShard"
         },
         "ConfigServer0NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "CreateMinOneShard", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27030",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "CreateMinOneShard"
-        },
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
+        }, 
         "ConfigServer0NodeIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -8405,40 +8265,40 @@
             "Condition": "CreateMinOneShard"
         },
         "ConfigServer1NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "CreateMinOneShard", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27030",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "CreateMinOneShard"
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
         },
         "ConfigServer1NodeIAMRole": {
             "Type": "AWS::IAM::Role",
@@ -8701,41 +8561,41 @@
             "Condition": "CreateMinOneShard"
         },
         "ConfigServer2NodeSecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
+            "Condition": "CreateMinOneShard", 
             "Properties": {
-                "GroupDescription": "Enable external access and allow communication (Trim as needed)",
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "27030",
-                        "ToPort": "27030",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": {
-                            "Ref": "RemoteAccessCIDR"
-                        }
-                    }
-                ],
+                "GroupDescription": "Enable external access and allow communication (Trim as needed)", 
                 "SecurityGroupEgress": [
                     {
-                        "IpProtocol": "-1",
-                        "CidrIp": "0.0.0.0/0",
-                        "FromPort": "1",
+                        "CidrIp": "0.0.0.0/0", 
+                        "FromPort": "1", 
+                        "IpProtocol": "-1", 
                         "ToPort": "65535"
                     }
-                ]
-            },
-            "Condition": "CreateMinOneShard"
-        },
+                ], 
+                "SecurityGroupIngress": [
+                    {
+                        "SourceSecurityGroupId": {
+                            "Ref": "NATSecurityGroup"
+                        },
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    },
+                    {
+                        "CidrIp": {
+                            "Ref": "VPCCIDR"
+                        }, 
+                        "FromPort": "0", 
+                        "IpProtocol": "-1", 
+                        "ToPort": "65535"
+                    }
+                ], 
+                "VpcId": {
+                    "Ref": "VPC"
+                }
+            }, 
+            "Type": "AWS::EC2::SecurityGroup"
+        }, 
         "ConfigServer2NodeIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
