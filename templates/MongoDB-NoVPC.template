@@ -838,6 +838,10 @@
                         "Value": "PrimaryReplicaNode0"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Primary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -863,6 +867,7 @@
                         "Key": "NodeShardIndex",
                         "Value": "-1"
                     }
+
                 ],
                 "BlockDeviceMappings": [
                     {
@@ -1031,6 +1036,10 @@
                     {
                         "Key": "Name",
                         "Value": "PrimaryReplicaNode0"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Primary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -1391,6 +1400,10 @@
                         "Value": "PrimaryReplicaNode00"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Primary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -1584,6 +1597,10 @@
                     {
                         "Key": "Name",
                         "Value": "PrimaryReplicaNode00"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Primary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -1944,6 +1961,10 @@
                         "Value": "SecondaryReplicaNode0"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -2137,6 +2158,10 @@
                     {
                         "Key": "Name",
                         "Value": "SecondaryReplicaNode0"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -2497,6 +2522,10 @@
                         "Value": "SecondaryReplicaNode00"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -2690,6 +2719,10 @@
                     {
                         "Key": "Name",
                         "Value": "SecondaryReplicaNode00"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -3050,6 +3083,10 @@
                         "Value": "SecondaryReplicaNode1"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -3243,6 +3280,10 @@
                     {
                         "Key": "Name",
                         "Value": "SecondaryReplicaNode1"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -3603,6 +3644,10 @@
                         "Value": "SecondaryReplicaNode01"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -3796,6 +3841,10 @@
                     {
                         "Key": "Name",
                         "Value": "SecondaryReplicaNode01"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -4156,6 +4205,10 @@
                         "Value": "PrimaryReplicaNode10"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Primary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -4349,6 +4402,10 @@
                     {
                         "Key": "Name",
                         "Value": "PrimaryReplicaNode10"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Primary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -4709,6 +4766,10 @@
                         "Value": "SecondaryReplicaNode10"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -4902,6 +4963,10 @@
                     {
                         "Key": "Name",
                         "Value": "SecondaryReplicaNode10"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -5262,6 +5327,10 @@
                         "Value": "SecondaryReplicaNode11"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -5455,6 +5524,10 @@
                     {
                         "Key": "Name",
                         "Value": "SecondaryReplicaNode11"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -5815,6 +5888,10 @@
                         "Value": "PrimaryReplicaNode20"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Primary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -6008,6 +6085,10 @@
                     {
                         "Key": "Name",
                         "Value": "PrimaryReplicaNode20"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Primary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -6368,6 +6449,10 @@
                         "Value": "SecondaryReplicaNode20"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -6561,6 +6646,10 @@
                     {
                         "Key": "Name",
                         "Value": "SecondaryReplicaNode20"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",
@@ -6921,6 +7010,10 @@
                         "Value": "SecondaryReplicaNode21"
                     },
                     {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -7114,6 +7207,10 @@
                     {
                         "Key": "Name",
                         "Value": "SecondaryReplicaNode21"
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": "Secondary"
                     },
                     {
                         "Key": "ClusterReplicaSetCount",

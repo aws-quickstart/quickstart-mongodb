@@ -60,6 +60,10 @@
             "Description": "Instance Name",
             "Type": "String"
         },
+        "NodeType": {
+            "Description": "Instance Node Type",
+            "Type": "String"
+        },
         "NodeReplicaSetIndex": {
             "Description": "Instance Index",
             "Type": "String"
@@ -227,6 +231,12 @@
                         "Key": "Name",
                         "Value": {
                             "Ref": "ReplicaNodeNameTag"
+                        }
+                    },
+                    {
+                        "Key": "NodeType",
+                        "Value": {
+                            "Ref": "NodeType"
                         }
                     },
                     {
@@ -494,6 +504,10 @@
         "NodeNameTag": {
             "Description": "Node Name Tag",
             "Value" : { "Ref": "ReplicaNodeNameTag"}
+        },
+        "NodeType": {
+            "Description": "Node Name Tag",
+            "Value" : { "Ref": "NodeType"}
         }
     }
 }

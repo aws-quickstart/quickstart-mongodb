@@ -541,6 +541,7 @@
                         ]
                     },
                     "ReplicaNodeNameTag": "PrimaryReplicaNode0",
+                    "NodeType": "Primary",
                     "NodeReplicaSetIndex": "0",
                     "ReplicaShardIndex": {
                         "Ref": "ReplicaShardIndex"
@@ -647,6 +648,7 @@
                         ]
                     },
                     "ReplicaNodeNameTag": "SecondaryReplicaNode0",
+                    "NodeType": "Secondary",
                     "NodeReplicaSetIndex": "1",
                     "ReplicaShardIndex": {
                         "Ref": "ReplicaShardIndex"
@@ -754,6 +756,7 @@
                         ]
                     },
                     "ReplicaNodeNameTag": "SecondaryReplicaNode1",
+                    "NodeType": "Secondary",
                     "NodeReplicaSetIndex": "2",
                     "ReplicaShardIndex": {
                         "Ref": "ReplicaShardIndex"
