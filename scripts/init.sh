@@ -55,7 +55,7 @@ yum -y install sysstat
 #################################################################
 #  Figure out what kind of node we are and set some values
 #################################################################
-NODE_TYPE=`getValue Name`
+NODE_TYPE=`getValue NodeType`
 IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 SHARD=s`getValue NodeShardIndex`
 NODES=`getValue ClusterReplicaSetCount`
