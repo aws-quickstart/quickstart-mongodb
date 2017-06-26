@@ -158,10 +158,10 @@
             "AllowedPattern": "vpc-[0-9a-z]{8}"
         },
         "VPCCIDR": {
-            "AllowedPattern": "[a-zA-Z0-9]+\\..+", 
-            "Description": "CIDR Block of the existing VPC", 
+            "AllowedPattern": "[a-zA-Z0-9]+\\..+",
+            "Description": "CIDR Block of the existing VPC",
             "Type": "String"
-        },         
+        },
         "PrimaryNodeSubnet": {
             "Type": "AWS::EC2::Subnet::Id",
             "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s).",
@@ -607,40 +607,40 @@
     "Mappings": {
         "AWSAMIRegionMap": {
             "AMI": {
-                "AMZNLINUX": "amzn-ami-hvm-2017.03.0.20170417-x86_64-gp2"
+                "AMZNLINUX": "amzn-ami-hvm-2017.03.1.20170617-x86_64-gp2"
             },
             "ap-northeast-1": {
-                "AMZNLINUX": "ami-923d12f5"
+                "AMZNLINUX": "ami-bbf2f9dc"
             },
             "ap-northeast-2": {
-                "AMZNLINUX": "ami-9d15c7f3"
+                "AMZNLINUX": "ami-9bab74f5"
             },
             "ap-south-1": {
-                "AMZNLINUX": "ami-52c7b43d"
+                "AMZNLINUX": "ami-3c89f653"
             },
             "ap-southeast-1": {
-                "AMZNLINUX": "ami-fc5ae39f"
+                "AMZNLINUX": "ami-58d65b3b"
             },
             "ap-southeast-2": {
-                "AMZNLINUX": "ami-162c2575"
+                "AMZNLINUX": "ami-a18392c2"
             },
             "eu-central-1": {
-                "AMZNLINUX": "ami-b968bad6"
+                "AMZNLINUX": "ami-8da700e2"
             },
             "eu-west-1": {
-                "AMZNLINUX": "ami-01ccc867"
+                "AMZNLINUX": "ami-7d50491b"
             },
             "sa-east-1": {
-                "AMZNLINUX": "ami-37cfad5b"
+                "AMZNLINUX": "ami-1d660d71"
             },
             "us-east-1": {
-                "AMZNLINUX": "ami-c58c1dd3"
+                "AMZNLINUX": "ami-643b1972"
             },
             "us-west-1": {
-                "AMZNLINUX": "ami-7a85a01a"
+                "AMZNLINUX": "ami-563a1736"
             },
             "us-west-2": {
-                "AMZNLINUX": "ami-4836a428"
+                "AMZNLINUX": "ami-a07379d9"
             }
         }
     },
@@ -676,8 +676,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -1227,13 +1227,13 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
                         }
-                    },  
+                    },
                     {
                         "IpProtocol": "tcp",
                         "FromPort": "22",
@@ -1780,8 +1780,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -2333,8 +2333,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -2886,8 +2886,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -3439,8 +3439,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -3992,8 +3992,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -4545,8 +4545,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -5098,8 +5098,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -5651,8 +5651,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -6204,8 +6204,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -6757,8 +6757,8 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
@@ -7310,13 +7310,13 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
                         }
-                    },  
+                    },
                     {
                         "IpProtocol": "tcp",
                         "FromPort": "22",
@@ -7606,13 +7606,13 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
                         }
-                    },  
+                    },
                     {
                         "IpProtocol": "tcp",
                         "FromPort": "22",
@@ -7902,13 +7902,13 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        "FromPort": "0", 
-                        "IpProtocol": "-1", 
+                        "FromPort": "0",
+                        "IpProtocol": "-1",
                         "ToPort": "65535",
                         "CidrIp": {
                             "Ref": "VPCCIDR"
                         }
-                    },  
+                    },
                     {
                         "IpProtocol": "tcp",
                         "FromPort": "22",
