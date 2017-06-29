@@ -309,11 +309,6 @@
                                 "\n",
                                 "mkdir -p /home/ec2-user/mongodb \n",
                                 "cd /home/ec2-user/mongodb \n",
-                                "# Wait until the NAT initializes and Internet is available \n",
-                                "until ping -c 1 ietf.org \n",
-                                "do \n",
-                                "sleep 5; \n",
-                                "done \n",
                                 "aws s3 cp s3://",
                                 {
                                     "Ref": "QSS3BucketName"

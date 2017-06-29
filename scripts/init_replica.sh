@@ -360,8 +360,14 @@ EOF
         fi
     else
         port=27017
+
+        priority=10
+        conf="{\"_id\" : \"${SHARD}\", \"version\" : 1, \"members\" : ["
+        conf="${conf}{\"_id\" : 1, \"host\" :\"${IP}:${port}\", \"priority\":${priority}}"
+        conf=${conf}"]}"
+
 mongo --port ${port} << EOF
-rs.initiate()
+rs.initiate(${conf})
 EOF
 
     fi
