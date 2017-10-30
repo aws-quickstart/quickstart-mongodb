@@ -1,7 +1,7 @@
 global:
-  qsname: quickstart-mongodb
+  marketplace-ami: false
   owner: quickstart-eng@amazon.com
-  reporting: true
+  qsname: quickstart-mongodb
   regions:
     - ap-northeast-1
     - ap-northeast-2
@@ -17,18 +17,9 @@ global:
     - us-east-2
     - us-west-1
     - us-west-2
+  reporting: true
 tests:
-  mongodb-3-AZ:
-    template_file:  mongodb-master.template
-    parameter_input: mongodb-master.json
-    regions:
-    - ap-southeast-2
-    - eu-west-1
-    - us-east-1
-    - us-east-2
-    - us-west-2
   mongodb-2-AZ:
-    template_file:  mongodb-master.template
     parameter_input: mongodb-master-2AZ.json
     regions:
       - ap-northeast-1
@@ -40,4 +31,13 @@ tests:
       - eu-west-2
       - sa-east-1
       - us-west-1
-
+    template_file: mongodb-master.template
+  mongodb-3-AZ:
+    parameter_input: mongodb-master.json
+    regions:
+      - ap-southeast-2
+      - eu-west-1
+      - us-east-1
+      - us-east-2
+      - us-west-2
+    template_file: mongodb-master.template
