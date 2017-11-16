@@ -68,7 +68,7 @@ usage() {
         -b Block until table is created
         -d Delete table
         -s Update "Status" column
-        -i Insert/Update Item (key=value pair)
+        -u Insert/Update Item (key=value pair)
         -n Table Name (optional. Default name is CFN stackname)
         -q Query number of nodes in a given state
         -w Wait until N nodes reach a specific state (COMPLETE=N)
@@ -95,7 +95,7 @@ FETCH_KEY=0
 
 [[ $# -eq 0 ]] && usage;
 
-while getopts "hcbpdgikfs:i:n:q:w:" o; do
+while getopts "hcbpdgikfs:u:n:q:w:" o; do
   case "${o}" in
     h) usage && exit 0
     ;;
@@ -117,7 +117,7 @@ while getopts "hcbpdgikfs:i:n:q:w:" o; do
     ;;
     f) FETCH_KEY=1
     ;;
-    i) NEW_ITEM_PAIR=${OPTARG}
+    u) NEW_ITEM_PAIR=${OPTARG}
     ;;
     n) TABLE_NAME=${OPTARG}
     ;;

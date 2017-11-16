@@ -806,6 +806,12 @@
             },
             "Description": "Private IP Address of Secondary Replica 1 Node",
             "Condition": "CreateThreeReplicaSet"
+        },
+        "MongoDBServerAccessSecurityGroup": {
+            "Value": {
+                "Ref": "MongoDBServerAccessSecurityGroup"
+            },
+            "Description": "MongoDB Access Security Group"
         }
     }
 }
