@@ -611,40 +611,40 @@
     "Mappings": {
         "AWSAMIRegionMap": {
             "AMI": {
-                "AWSNAT": "amzn-ami-vpc-nat-hvm-2017.09.1.20171103-x86_64-ebs"
+                "AWSNAT": "amzn-ami-vpc-nat-hvm-2017.09.1.20171120-x86_64-ebs"
             },
             "ap-northeast-1": {
-                "AWSNAT": "ami-9a06a9fc"
+                "AWSNAT": "ami-6a9d2f0c"
             },
             "ap-northeast-2": {
-                "AWSNAT": "ami-3181255f"
+                "AWSNAT": "ami-c5882fab"
             },
             "ap-south-1": {
-                "AWSNAT": "ami-bdd09dd2"
+                "AWSNAT": "ami-61c38c0e"
             },
             "ap-southeast-1": {
-                "AWSNAT": "ami-047a3667"
+                "AWSNAT": "ami-0e3e696d"
             },
             "ap-southeast-2": {
-                "AWSNAT": "ami-a96a84cb"
+                "AWSNAT": "ami-3348a351"
             },
             "eu-central-1": {
-                "AWSNAT": "ami-6b890d04"
+                "AWSNAT": "ami-7d2ba812"
             },
             "eu-west-1": {
-                "AWSNAT": "ami-790dad00"
+                "AWSNAT": "ami-2d912554"
             },
             "sa-east-1": {
-                "AWSNAT": "ami-577e053b"
+                "AWSNAT": "ami-dc6e2bb0"
             },
             "us-east-1": {
-                "AWSNAT": "ami-8b57e2f1"
+                "AWSNAT": "ami-25ef665f"
             },
             "us-west-1": {
-                "AWSNAT": "ami-33023d53"
+                "AWSNAT": "ami-e71d2587"
             },
             "us-west-2": {
-                "AWSNAT": "ami-d2da10aa"
+                "AWSNAT": "ami-38469440"
             }
         }
     },
