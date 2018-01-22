@@ -664,52 +664,52 @@
     "Mappings": {
         "AWSAMIRegionMap": {
             "AMI": {
-                "AMZNLINUX": "amzn-ami-hvm-2017.09.1.20180108-x86_64-gp2",
-                "AWSNAT": "amzn-ami-vpc-nat-hvm-2017.09.1.20180108-x86_64-ebs"
+                "AMZNLINUX": "amzn-ami-hvm-2017.09.1.20180115-x86_64-gp2",
+                "AWSNAT": "amzn-ami-vpc-nat-hvm-2017.09.1.20180115-x86_64-ebs"
             },
             "ap-northeast-1": {
-                "AMZNLINUX": "ami-33c25b55",
-                "AWSNAT": "ami-6bc45d0d"
+                "AMZNLINUX": "ami-ceafcba8",
+                "AWSNAT": "ami-2c593d4a"
             },
             "ap-northeast-2": {
-                "AMZNLINUX": "ami-d9b616b7",
-                "AWSNAT": "ami-42b8182c"
+                "AMZNLINUX": "ami-863090e8",
+                "AWSNAT": "ami-c52f8fab"
             },
             "ap-south-1": {
-                "AMZNLINUX": "ami-fedb8f91",
-                "AWSNAT": "ami-ffc49090"
+                "AMZNLINUX": "ami-531a4c3c",
+                "AWSNAT": "ami-c2e9bead"
             },
             "ap-southeast-1": {
-                "AMZNLINUX": "ami-889cecf4",
-                "AWSNAT": "ami-839cecff"
+                "AMZNLINUX": "ami-68097514",
+                "AWSNAT": "ami-270f735b"
             },
             "ap-southeast-2": {
-                "AMZNLINUX": "ami-ccab56ae",
-                "AWSNAT": "ami-fda5589f"
+                "AMZNLINUX": "ami-942dd1f6",
+                "AWSNAT": "ami-3d28d45f"
             },
             "eu-central-1": {
-                "AMZNLINUX": "ami-0fc85a60",
-                "AWSNAT": "ami-96c85af9"
+                "AMZNLINUX": "ami-5652ce39",
+                "AWSNAT": "ami-5756ca38"
             },
             "eu-west-1": {
-                "AMZNLINUX": "ami-e487179d",
-                "AWSNAT": "ami-4587173c"
+                "AMZNLINUX": "ami-d834aba1",
+                "AWSNAT": "ami-a136a9d8"
             },
             "sa-east-1": {
-                "AMZNLINUX": "ami-1226647e",
-                "AWSNAT": "ami-9e2664f2"
+                "AMZNLINUX": "ami-84175ae8",
+                "AWSNAT": "ami-be1f52d2"
             },
             "us-east-1": {
-                "AMZNLINUX": "ami-cb9ec1b1",
-                "AWSNAT": "ami-01623d7b"
+                "AMZNLINUX": "ami-97785bed",
+                "AWSNAT": "ami-8d7655f7"
             },
             "us-west-1": {
-                "AMZNLINUX": "ami-95eeeef5",
-                "AWSNAT": "ami-4fefef2f"
+                "AMZNLINUX": "ami-824c4ee2",
+                "AWSNAT": "ami-394e4c59"
             },
             "us-west-2": {
-                "AMZNLINUX": "ami-32cf7b4a",
-                "AWSNAT": "ami-d3cc78ab"
+                "AMZNLINUX": "ami-f2d3638a",
+                "AWSNAT": "ami-35d6664d"
             }
         }
     },
