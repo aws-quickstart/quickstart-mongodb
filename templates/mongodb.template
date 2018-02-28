@@ -221,22 +221,22 @@
         "VPC": {
             "Type": "AWS::EC2::VPC::Id",
             "Description": "VPC-ID of your existing Virtual Private Cloud (VPC) where you want to depoy MongoDB cluster.",
-            "AllowedPattern": "vpc-[0-9a-z]{8}"
+            "AllowedPattern": "(vpc-[0-9a-z]{8})|(vpc-[0-9a-z]{17})"
         },
         "PrimaryNodeSubnet": {
             "Type": "AWS::EC2::Subnet::Id",
             "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s).",
-            "AllowedPattern": "subnet-[0-9a-z]{8}"
+            "AllowedPattern": "(subnet-[0-9a-z]{8})|(subnet-[0-9a-z]{17})"
         },
         "Secondary0NodeSubnet": {
             "Type": "AWS::EC2::Subnet::Id",
             "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s).",
-            "AllowedPattern": "subnet-[0-9a-z]{8}"
+            "AllowedPattern": "(subnet-[0-9a-z]{8})|(subnet-[0-9a-z]{17})"
         },
         "Secondary1NodeSubnet": {
             "Type": "AWS::EC2::Subnet::Id",
             "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s).",
-            "AllowedPattern": "subnet-[0-9a-z]{8}"
+            "AllowedPattern": "(subnet-[0-9a-z]{8})|(subnet-[0-9a-z]{17})"
         }
     },
     "Conditions": {

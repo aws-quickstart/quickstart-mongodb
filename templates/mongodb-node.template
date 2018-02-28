@@ -5,7 +5,7 @@
         "VPC": {
             "Type": "AWS::EC2::VPC::Id",
             "Description": "VPC-ID of your existing Virtual Private Cloud (VPC) where you want to depoy MongoDB cluster.",
-            "AllowedPattern": "vpc-[0-9a-z]{8}"
+            "AllowedPattern": "(vpc-[0-9a-z]{8})|(vpc-[0-9a-z]{17})"
         },
         "MongoDBServerSecurityGroupID": {
             "Description": "ID of the MongoDB Server Access Security Group (e.g., sg-7f16e910)",
