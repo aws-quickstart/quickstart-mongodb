@@ -107,7 +107,7 @@ echo "* soft nofile 64000
 enable_all_listen() {
   for f in /etc/mongo*.conf
   do
-    sed -e '/bindIp/s/^/#/g' -i ${f}
+    sed -e '/bindIp/s/^/ bindIp: 0.0.0.0 #/' -i ${f}
     sed -e '/bind_ip/s/^/#/g' -i ${f}
     echo " Set listen to all interfaces : ${f}"
   done
@@ -173,6 +173,7 @@ chown mongod:mongod /var/run/mongod
 
 echo "net:" > mongod.conf
 echo "  port:" >> mongod.conf
+echo "  bindIp: 0.0.0.0" >> mongod.conf
 echo "" >> mongod.conf
 echo "systemLog:" >> mongod.conf
 echo "  destination: file" >> mongod.conf

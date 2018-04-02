@@ -1,5 +1,5 @@
 # MongoDB on the AWS Cloud
-> MongoDB version 3.4
+> MongoDB version 3.6
 
 ## Deployment Options
 AWS Quick Start Team
@@ -12,7 +12,7 @@ The following links are for your convenience. Before you launch the Quick Start,
 
 ## Change Log
 ### April 2017
-* Changed version to MongoDB 3.4
+* Changed version to MongoDB 3.6
 * Removed Sharding Option and Configuration Parameters.
 * Simplified init script init_replica.sh
 * Added test cases
