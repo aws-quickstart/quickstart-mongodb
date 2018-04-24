@@ -78,6 +78,11 @@
                 "r3.2xlarge",
                 "r3.4xlarge",
                 "r3.8xlarge",
+                "r4.large",
+                "r4.xlarge",
+                "r4.2xlarge",
+                "r4.4xlarge",
+                "r4.8xlarge",
                 "i2.xlarge",
                 "i2.2xlarge",
                 "i2.4xlarge",
@@ -142,6 +147,7 @@
             "Type": "String",
             "Default": "3.4",
             "AllowedValues": [
+                "3.6",
                 "3.4",
                 "3.2"
             ]
