@@ -348,10 +348,11 @@
 	        ]
 	    },
 	    "MongoDBVersion": {
-	        "Default": "3.4",
+	        "Default": "3.6",
 	        "Type": "String",
 	        "Description": "MongoDB version",
 	        "AllowedValues": [
+				"3.6",
 	            "3.4",
                 "3.2"
 	        ]
