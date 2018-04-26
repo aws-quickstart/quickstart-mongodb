@@ -375,7 +375,7 @@
 			"Type": "String"
 		},
 	    "ClusterReplicaSetCount": {
-	        "Default": "1",
+	        "Default": "3",
 	        "Type": "String",
 	        "Description": "Number of Replica Set Members. Choose 1 or 3",
 	        "AllowedValues": [
