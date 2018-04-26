@@ -113,7 +113,7 @@
         "ClusterReplicaSetCount": {
             "Description": "Number of Replica Set Members. Choose 1 or 3",
             "Type": "String",
-            "Default": "1",
+            "Default": "3",
             "AllowedValues": [
                 "1",
                 "3"
@@ -122,8 +122,9 @@
         "MongoDBVersion": {
             "Description": "MongoDB version",
             "Type": "String",
-            "Default": "3.4",
+            "Default": "3.6",
             "AllowedValues": [
+                "3.6",
                 "3.4",
                 "3.2"
             ]
@@ -152,14 +153,14 @@
         },
         "QSS3BucketName": {
             "AllowedPattern": "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$",
-            "Default": "quickstart-reference",
+            "Default": "aws-quickstart",
             "Type": "String",
             "ConstraintDescription": "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).",
             "Description": "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
         },
         "QSS3KeyPrefix": {
             "AllowedPattern": "^[0-9a-zA-Z-/]*$",
-            "Default": "mongodb/latest/",
+            "Default": "quickstart-mongodb/",
             "Type": "String",
             "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with a hyphen (-)."
@@ -193,6 +194,38 @@
             "Type": "String",
             "Default": "m4.large",
             "AllowedValues": [
+                "m5.large",
+                "m5.xlarge",
+                "m5.2xlarge",
+                "m5.4xlarge",
+                "m5.12xlarge",
+                "m5.24xlarge",
+                "c5.large",
+                "c5.xlarge",
+                "c5.2xlarge",
+                "c5.4xlarge",
+                "c5.9xlarge",
+                "c5.18xlarge",
+                "x1.16xlarge",
+                "x1.32xlarge",
+                "r4.large",
+                "r4.xlarge",
+                "r4.2xlarge",
+                "r4.4xlarge",
+                "r4.8xlarge",
+                "r4.16xlarge",
+                "i3.large",
+                "i3.xlarge",
+                "i3.2xlarge",
+                "i3.4xlarge",
+                "i3.8xlarge",
+                "i3.16xlarge",
+                "x1e.32xlarge",
+                "x1e.16xlarge",
+                "x1e.8xlarge",
+                "x1e.4xlarge",
+                "x1e.2xlarge",
+                "x1e.xlarge",
                 "m3.medium",
                 "m3.large",
                 "m3.xlarge",
@@ -220,23 +253,19 @@
         },
         "VPC": {
             "Type": "AWS::EC2::VPC::Id",
-            "Description": "VPC-ID of your existing Virtual Private Cloud (VPC) where you want to depoy MongoDB cluster.",
-            "AllowedPattern": "vpc-[0-9a-z]{8}"
+            "Description": "VPC-ID of your existing Virtual Private Cloud (VPC) where you want to depoy MongoDB cluster."
         },
         "PrimaryNodeSubnet": {
             "Type": "AWS::EC2::Subnet::Id",
-            "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s).",
-            "AllowedPattern": "subnet-[0-9a-z]{8}"
+            "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s)."
         },
         "Secondary0NodeSubnet": {
             "Type": "AWS::EC2::Subnet::Id",
-            "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s).",
-            "AllowedPattern": "subnet-[0-9a-z]{8}"
+            "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s)."
         },
         "Secondary1NodeSubnet": {
             "Type": "AWS::EC2::Subnet::Id",
-            "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s).",
-            "AllowedPattern": "subnet-[0-9a-z]{8}"
+            "Description": "Subnet-ID the existing subnet in your VPC where you want to deploy Primary node(s)."
         }
     },
     "Conditions": {
@@ -260,49 +289,49 @@
     "Mappings": {
         "AWSAMIRegionMap": {
             "AMI": {
-                "AMZNLINUX": "amzn-ami-hvm-2017.09.1.20180115-x86_64-gp2"
+                "AMZNLINUX": "amzn-ami-hvm-2018.03.0.20180412-x86_64-gp2"
             },
             "ap-northeast-1": {
-                "AMZNLINUX": "ami-ceafcba8"
+                "AMZNLINUX": "ami-28ddc154"
             },
             "ap-northeast-2": {
-                "AMZNLINUX": "ami-863090e8"
+                "AMZNLINUX": "ami-efaf0181"
             },
             "ap-south-1": {
-                "AMZNLINUX": "ami-531a4c3c"
+                "AMZNLINUX": "ami-b46f48db"
             },
             "ap-southeast-1": {
-                "AMZNLINUX": "ami-68097514"
+                "AMZNLINUX": "ami-64260718"
             },
             "ap-southeast-2": {
-                "AMZNLINUX": "ami-942dd1f6"
+                "AMZNLINUX": "ami-60a26a02"
             },
             "ca-central-1": {
-                "AMZNLINUX": "ami-a954d1cd"
+                "AMZNLINUX": "ami-2f39bf4b"
             },
             "eu-central-1": {
-                "AMZNLINUX": "ami-5652ce39"
+                "AMZNLINUX": "ami-1b316af0"
             },
             "eu-west-1": {
-                "AMZNLINUX": "ami-d834aba1"
+                "AMZNLINUX": "ami-9cbe9be5"
             },
             "eu-west-2": {
-                "AMZNLINUX": "ami-403e2524"
+                "AMZNLINUX": "ami-c12dcda6"
             },
             "sa-east-1": {
-                "AMZNLINUX": "ami-84175ae8"
+                "AMZNLINUX": "ami-f09dcc9c"
             },
             "us-east-1": {
-                "AMZNLINUX": "ami-97785bed"
+                "AMZNLINUX": "ami-467ca739"
             },
             "us-east-2": {
-                "AMZNLINUX": "ami-f63b1193"
+                "AMZNLINUX": "ami-976152f2"
             },
             "us-west-1": {
-                "AMZNLINUX": "ami-824c4ee2"
+                "AMZNLINUX": "ami-46e1f226"
             },
             "us-west-2": {
-                "AMZNLINUX": "ami-f2d3638a"
+                "AMZNLINUX": "ami-6b8cef13"
             }
         }
     },

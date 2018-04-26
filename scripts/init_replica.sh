@@ -30,7 +30,7 @@ getValue() {
 version=${MongoDBVersion}
 
 if [ -z "$version" ] ; then
-  version="3.2"
+  version="3.6"
 fi
 
 echo "[mongodb-org-${version}]
@@ -173,6 +173,9 @@ chown mongod:mongod /var/run/mongod
 
 echo "net:" > mongod.conf
 echo "  port:" >> mongod.conf
+if [ "$version" == "3.6" ]; then
+    echo "  bindIpAll: true" >> mongod.conf
+fi
 echo "" >> mongod.conf
 echo "systemLog:" >> mongod.conf
 echo "  destination: file" >> mongod.conf
@@ -289,7 +292,9 @@ chkconfig munin-node on
 service munin-node start
 
 chkconfig mongod on
-enable_all_listen
+if [ "$version" != "3.6" ]; then
+    enable_all_listen
+fi
 service mongod start
 
 #################################################################
