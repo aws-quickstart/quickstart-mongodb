@@ -289,49 +289,49 @@
     "Mappings": {
         "AWSAMIRegionMap": {
             "AMI": {
-                "AMZNLINUX": "amzn-ami-hvm-2018.03.0.20180412-x86_64-gp2"
+                "AMZNLINUX": "amzn-ami-hvm-2018.03.0.20180508-x86_64-gp2"
             },
             "ap-northeast-1": {
-                "AMZNLINUX": "ami-28ddc154"
+                "AMZNLINUX": "ami-92df37ed"
             },
             "ap-northeast-2": {
-                "AMZNLINUX": "ami-efaf0181"
+                "AMZNLINUX": "ami-c10fa6af"
             },
             "ap-south-1": {
-                "AMZNLINUX": "ami-b46f48db"
+                "AMZNLINUX": "ami-76d6f519"
             },
             "ap-southeast-1": {
-                "AMZNLINUX": "ami-64260718"
+                "AMZNLINUX": "ami-de90a5a2"
             },
             "ap-southeast-2": {
-                "AMZNLINUX": "ami-60a26a02"
+                "AMZNLINUX": "ami-423bec20"
             },
             "ca-central-1": {
-                "AMZNLINUX": "ami-2f39bf4b"
+                "AMZNLINUX": "ami-338a0a57"
             },
             "eu-central-1": {
-                "AMZNLINUX": "ami-1b316af0"
+                "AMZNLINUX": "ami-9a91b371"
             },
             "eu-west-1": {
-                "AMZNLINUX": "ami-9cbe9be5"
+                "AMZNLINUX": "ami-ca0135b3"
             },
             "eu-west-2": {
-                "AMZNLINUX": "ami-c12dcda6"
+                "AMZNLINUX": "ami-a36f8dc4"
             },
             "sa-east-1": {
-                "AMZNLINUX": "ami-f09dcc9c"
+                "AMZNLINUX": "ami-3885d854"
             },
             "us-east-1": {
-                "AMZNLINUX": "ami-467ca739"
+                "AMZNLINUX": "ami-14c5486b"
             },
             "us-east-2": {
-                "AMZNLINUX": "ami-976152f2"
+                "AMZNLINUX": "ami-922914f7"
             },
             "us-west-1": {
-                "AMZNLINUX": "ami-46e1f226"
+                "AMZNLINUX": "ami-25110f45"
             },
             "us-west-2": {
-                "AMZNLINUX": "ami-6b8cef13"
+                "AMZNLINUX": "ami-e251209a"
             }
         }
     },
