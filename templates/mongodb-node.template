@@ -288,7 +288,8 @@
                             "VolumeType": "io1",
                             "DeleteOnTermination": "true",
                             "VolumeSize": "25",
-                            "Iops": "250"
+                            "Iops": "250",
+                            "Encrypted" : "true"
                         }
                     },
                     {
@@ -297,7 +298,8 @@
                             "VolumeType": "io1",
                             "DeleteOnTermination": "true",
                             "VolumeSize": "25",
-                            "Iops": "200"
+                            "Iops": "200",
+                            "Encrypted" : "true"
                         }
                     },
                     {
@@ -320,7 +322,8 @@
                                     }
                                 ]
                             },
-                            "DeleteOnTermination": "true"
+                            "DeleteOnTermination": "true",
+                            "Encrypted" : "true"
                         }
                     }
                 ],
