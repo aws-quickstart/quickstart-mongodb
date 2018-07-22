@@ -173,7 +173,7 @@ chown mongod:mongod /var/run/mongod
 
 echo "net:" > mongod.conf
 echo "  port:" >> mongod.conf
-if [ "$version" == "3.6" ]; then
+if [ "$version" == "3.6" ] || [ "$version" == "4.0" ]; then
     echo "  bindIpAll: true" >> mongod.conf
 fi
 echo "" >> mongod.conf
@@ -292,7 +292,7 @@ chkconfig munin-node on
 service munin-node start
 
 chkconfig mongod on
-if [ "$version" != "3.6" ]; then
+if [ "$version" != "3.6" ] && [ "$version" != "4.0" ];  then
     enable_all_listen
 fi
 service mongod start

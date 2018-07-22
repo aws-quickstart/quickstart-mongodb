@@ -140,8 +140,9 @@
         "MongoDBVersion": {
             "Description": "MongoDB version",
             "Type": "String",
-            "Default": "3.6",
+            "Default": "4.0",
             "AllowedValues": [
+                "4.0",
                 "3.6",
                 "3.4",
                 "3.2"
