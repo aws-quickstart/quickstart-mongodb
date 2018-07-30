@@ -29,8 +29,12 @@ tests:
       - ca-central-1
       - eu-central-1
       - eu-west-2
-      - sa-east-1
       - us-west-1
+    template_file: mongodb-master.template
+  mongodb-sa-east-1-2-AZ:
+    parameter_input: mongodb-sa-east-1.json
+    regions:
+      - sa-east-1
     template_file: mongodb-master.template
   mongodb-3-AZ:
     parameter_input: mongodb-master.json
