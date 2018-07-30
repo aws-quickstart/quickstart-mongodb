@@ -22,5 +22,9 @@
   {
     "ParameterValue": "T35TMong0",
     "ParameterKey": "MongoDBAdminPassword"
+  },
+  {
+    "ParameterKey":"QSS3BucketName",
+    "ParameterValue":"$[taskcat_autobucket]"
   }
 ]
