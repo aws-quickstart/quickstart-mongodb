@@ -437,13 +437,12 @@
                 "Path": "/",
                 "Policies": [
                     {
-                        "PolicyName": "Backup",
+                        "PolicyName": "mongodb-quickstart-policy",
                         "PolicyDocument": {
                             "Statement": [
                                 {
                                     "Effect": "Allow",
                                     "Action": [
-                                        "s3:*",
                                         "ec2:Describe*",
                                         "ec2:AttachNetworkInterface",
                                         "ec2:AttachVolume",
@@ -460,15 +459,28 @@
                                 {
                                     "Effect": "Allow",
                                     "Action": [
-                                        "dynamodb:*",
-                                        "dynamodb:Scan",
-                                        "dynamodb:Query",
-                                        "dynamodb:GetItem",
+                                        "s3:GetObject"
+                                    ],
+                                    "Resource": {"Fn::Sub": "arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*"}
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
                                         "dynamodb:BatchGetItem",
+                                        "dynamodb:CreateTable",
+                                        "dynamodb:DeleteTable",
+                                        "dynamodb:DescribeTable",
+                                        "dynamodb:GetItem",
+                                        "dynamodb:PutItem",
+                                        "dynamodb:Query",
+                                        "dynamodb:Scan",
+                                        "dynamodb:UpdateItem",
                                         "dynamodb:UpdateTable"
                                     ],
                                     "Resource": [
-                                        "*"
+                                        {
+                                            "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*MONGODB_*"
+                                        }
                                     ]
                                 }
                             ]
