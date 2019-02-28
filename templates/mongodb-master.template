@@ -479,7 +479,6 @@
             }
         },
         "BastionStack": {
-            "DependsOn": "VPCStack",
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -541,7 +540,6 @@
             }
         },
         "MongoDBStack": {
-            "DependsOn": "BastionStack",
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
             	"TemplateURL": {

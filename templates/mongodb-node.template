@@ -86,7 +86,7 @@
         },
         "ImageId": {
             "Description": "AMI ID for Instance",
-            "Type": "String"
+            "Type": "AWS::EC2::Image::Id"
         },
         "ReplicaNodeNameTag": {
             "Description": "Instance Name",
@@ -192,6 +192,130 @@
                 },
                 "io1"
             ]
+        },
+        "InstanceRecoverySupported": {
+            "Fn::And": [
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i3.large"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i3.xlarge"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i3.2xlarge"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i3.4xlarge"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i3.8xlarge"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i3.16xlarge"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i2.xlarge"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i2.2xlarge"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i2.4xlarge"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Fn::Not": [
+                        {
+                            "Fn::Equals": [
+                                {
+                                    "Ref": "NodeInstanceType"
+                                },
+                                "i2.8xlarge"
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     },
     "Resources": {
@@ -210,7 +334,7 @@
                         "Ref": "MongoDBServersSecurityGroupID"
                     }
                 ],
-                "SourceDestCheck": "true",
+                "SourceDestCheck": true,
                 "Tags": [
                     {
                         "Key": "Network",
@@ -287,20 +411,20 @@
                         "DeviceName": "/dev/xvdg",
                         "Ebs": {
                             "VolumeType": "io1",
-                            "DeleteOnTermination": "true",
-                            "VolumeSize": "25",
-                            "Iops": "250",
-                            "Encrypted" : "true"
+                            "DeleteOnTermination": true,
+                            "VolumeSize": 25,
+                            "Iops": 250,
+                            "Encrypted" : true
                         }
                     },
                     {
                         "DeviceName": "/dev/xvdh",
                         "Ebs": {
                             "VolumeType": "io1",
-                            "DeleteOnTermination": "true",
-                            "VolumeSize": "25",
-                            "Iops": "200",
-                            "Encrypted" : "true"
+                            "DeleteOnTermination": true,
+                            "VolumeSize": 25,
+                            "Iops": 200,
+                            "Encrypted" : true
                         }
                     },
                     {
@@ -323,8 +447,8 @@
                                     }
                                 ]
                             },
-                            "DeleteOnTermination": "true",
-                            "Encrypted" : "true"
+                            "DeleteOnTermination": true,
+                            "Encrypted" : true
                         }
                     }
                 ],
@@ -475,15 +599,16 @@
         },
         "NodeInstanceRecoveryAlarm": {
             "Type": "AWS::CloudWatch::Alarm",
+            "Condition": "InstanceRecoverySupported",
             "Properties": {
                 "AlarmDescription": "EC2 Autorecovery for Node Instance. Autorecover if we fail EC2 status checks for 5 minutes.",
                 "Namespace": "AWS/EC2",
                 "MetricName": "StatusCheckFailed_System",
                 "Statistic": "Minimum",
-                "Period": "60",
-                "EvaluationPeriods": "5",
+                "Period": 60,
+                "EvaluationPeriods": 5,
                 "ComparisonOperator": "GreaterThanThreshold",
-                "Threshold": "0",
+                "Threshold": 0.0,
                 "AlarmActions": [
                     {
                         "Fn::Join": [

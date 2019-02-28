@@ -356,24 +356,24 @@
                 "SecurityGroupIngress": [
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
+                        "FromPort": 22,
+                        "ToPort": 22,
                         "SourceSecurityGroupId": {
                             "Ref": "BastionSecurityGroupID"
                         }
                     },
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": 27017,
+                        "ToPort": 27030,
                         "SourceSecurityGroupId": {
                             "Ref": "MongoDBServerAccessSecurityGroup"
                         }
                     },
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
+                        "FromPort": 28017,
+                        "ToPort": 28017,
                         "SourceSecurityGroupId": {
                             "Ref": "MongoDBServerAccessSecurityGroup"
                         }
@@ -391,24 +391,24 @@
                 "SecurityGroupIngress": [
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
+                        "FromPort": 22,
+                        "ToPort": 22,
                         "SourceSecurityGroupId": {
                             "Ref": "MongoDBServerSecurityGroup"
                         }
                     },
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": "27017",
-                        "ToPort": "27030",
+                        "FromPort": 27017,
+                        "ToPort": 27030,
                         "SourceSecurityGroupId": {
                             "Ref": "MongoDBServerSecurityGroup"
                         }
                     },
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": "28017",
-                        "ToPort": "28017",
+                        "FromPort": 28017,
+                        "ToPort": 28017,
                         "SourceSecurityGroupId": {
                             "Ref": "MongoDBServerSecurityGroup"
                         }
@@ -507,7 +507,6 @@
             "Properties": {}
         },
         "PrimaryReplicaNode0": {
-            "DependsOn": "PrimaryReplicaNode0WaitForNodeInstallWaitHandle",
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
                 "TemplateURL": {
@@ -612,7 +611,6 @@
             "Condition": "CreateThreeReplicaSet"
         },
         "SecondaryReplicaNode0": {
-            "DependsOn": "SecondaryReplicaNode0WaitForNodeInstallWaitHandle",
             "Condition": "CreateThreeReplicaSet",
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
@@ -719,7 +717,6 @@
             "Condition": "CreateThreeReplicaSet"
         },
         "SecondaryReplicaNode1": {
-            "DependsOn": "SecondaryReplicaNode1WaitForNodeInstallWaitHandle",
             "Condition": "CreateThreeReplicaSet",
             "Type": "AWS::CloudFormation::Stack",
             "Properties": {
