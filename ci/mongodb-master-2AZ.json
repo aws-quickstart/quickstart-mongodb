@@ -26,5 +26,9 @@
   {
     "ParameterKey":"QSS3BucketName",
     "ParameterValue":"$[taskcat_autobucket]"
+  },
+  {
+    "ParameterKey":"NodeInstanceType",
+    "ParameterValue":"m5.large"
   }
 ]
