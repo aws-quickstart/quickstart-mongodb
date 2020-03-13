@@ -46,7 +46,8 @@
                     },
                     "Parameters": [
                         "QSS3BucketName",
-                        "QSS3KeyPrefix"
+                        "QSS3KeyPrefix",
+                        "QSS3BucketRegion"
                     ]
                 }
             ],
@@ -83,6 +84,9 @@
                 },
                 "QSS3KeyPrefix": {
                     "default": "Quick Start S3 Key Prefix"
+                },
+                "QSS3BucketRegion": {
+                    "default": "Quick Start S3 bucket region"
                 },
                 "ReplicaShardIndex": {
                     "default": "Replica Shard Index"
@@ -165,6 +169,11 @@
             "Type": "String",
             "ConstraintDescription": "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).",
             "Description": "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/). It cannot start or end with a hyphen (-)."
+        },
+        "QSS3BucketRegion": {
+            Default: "us-east-1",
+            Description: "The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.",
+            Type: "String"
         },
         "KeyPairName": {
             "Type": "AWS::EC2::KeyPair::KeyName",
@@ -284,6 +293,14 @@
                     "Ref": "AWS::Region"
                 },
                 "us-gov-west-1"
+            ]
+        },
+        "UsingDefaultBucket": {
+            "Fn::Equals": [
+            {
+                "Ref": "QSS3BucketName"
+            },
+            "aws-quickstart"
             ]
         }
     },
@@ -462,7 +479,14 @@
                                         "s3:GetObject"
                                     ],
                                     "Resource": {
-                                        "Fn::Sub": "arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*"
+                                        "Fn::Sub": [
+                                           "arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*",
+                                           {
+                                               "S3Bucket": {
+                                                   "Fn::If": ["UsingDefaultBucket",  { "Fn::Sub": "${QSS3BucketName}-${AWS::Region}" }, {"Ref": "QSS3BucketName"}]
+                                               }
+                                           }
+                                        ]
                                     }
                                 },
                                 {
@@ -511,14 +535,13 @@
             "Properties": {
                 "TemplateURL": {
                     "Fn::Sub": [
-                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/mongodb-node.template",
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-node.template",
                         {
-                            "QSS3Region": {
-                                "Fn::If": [
-                                    "GovCloudCondition",
-                                    "s3-us-gov-west-1",
-                                    "s3"
-                                ]
+                            "S3Region": {
+                                "Fn::If": ["UsingDefaultBucket",  { "Ref": "AWS::Region" }, {"Ref": "QSS3BucketRegion"}]
+                            },
+                            "S3Bucket": {
+                                "Fn::If": ["UsingDefaultBucket",  { "Fn::Sub": "${QSS3BucketName}-${AWS::Region}" }, {"Ref": "QSS3BucketName"}]
                             }
                         }
                     ]
@@ -529,6 +552,9 @@
                     },
                     "QSS3KeyPrefix": {
                         "Ref": "QSS3KeyPrefix"
+                    },
+                    "QSS3BucketRegion": {
+                        "Ref": "QSS3BucketRegion"
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
@@ -616,14 +642,13 @@
             "Properties": {
                 "TemplateURL": {
                     "Fn::Sub": [
-                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/mongodb-node.template",
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-node.template",
                         {
-                            "QSS3Region": {
-                                "Fn::If": [
-                                    "GovCloudCondition",
-                                    "s3-us-gov-west-1",
-                                    "s3"
-                                ]
+                            "S3Region": {
+                                "Fn::If": ["UsingDefaultBucket",  { "Ref": "AWS::Region" }, {"Ref": "QSS3BucketRegion"}]
+                            },
+                            "S3Bucket": {
+                                "Fn::If": ["UsingDefaultBucket",  { "Fn::Sub": "${QSS3BucketName}-${AWS::Region}" }, {"Ref": "QSS3BucketName"}]
                             }
                         }
                     ]
@@ -634,6 +659,9 @@
                     },
                     "QSS3KeyPrefix": {
                         "Ref": "QSS3KeyPrefix"
+                    },
+                    "QSS3BucketRegion": {
+                        "Ref": "QSS3BucketRegion"
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"
@@ -722,14 +750,13 @@
             "Properties": {
                 "TemplateURL": {
                     "Fn::Sub": [
-                        "https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/mongodb-node.template",
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/mongodb-node.template",
                         {
-                            "QSS3Region": {
-                                "Fn::If": [
-                                    "GovCloudCondition",
-                                    "s3-us-gov-west-1",
-                                    "s3"
-                                ]
+                            "S3Region": {
+                                "Fn::If": ["UsingDefaultBucket",  { "Ref": "AWS::Region" }, {"Ref": "QSS3BucketRegion"}]
+                            },
+                            "S3Bucket": {
+                                "Fn::If": ["UsingDefaultBucket",  { "Fn::Sub": "${QSS3BucketName}-${AWS::Region}" }, {"Ref": "QSS3BucketName"}]
                             }
                         }
                     ]
@@ -740,6 +767,9 @@
                     },
                     "QSS3KeyPrefix": {
                         "Ref": "QSS3KeyPrefix"
+                    },
+                    "QSS3BucketRegion": {
+                        "Ref": "QSS3BucketRegion"
                     },
                     "ClusterReplicaSetCount": {
                         "Ref": "ClusterReplicaSetCount"

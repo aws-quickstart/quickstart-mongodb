@@ -1,0 +1,75 @@
+project:
+  name: quickstart-mongodb
+  owner: quickstart-eng@amazon.com
+  package_lambda: false
+  regions:
+  - ap-northeast-1
+  - ap-northeast-2
+  - ap-south-1
+  - ap-southeast-1
+  - ap-southeast-2
+  - ca-central-1
+  - eu-central-1
+  - eu-west-1
+  - eu-west-2
+  - sa-east-1
+  - us-east-1
+  - us-east-2
+  - us-west-1
+  - us-west-2
+  s3_bucket: ''
+tests:
+  mongodb-2-AZ:
+    parameters:
+      AvailabilityZones: $[alfred_genaz_2]
+      ClusterReplicaSetCount: '3'
+      KeyPairName: $[alfred_getkeypair]
+      MongoDBAdminPassword: T35TMong0
+      NodeInstanceType: m5.large
+      NumberOfAZs: '2'
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      RemoteAccessCIDR: 10.0.0.0/16
+    regions:
+    - ap-northeast-1
+    - ap-northeast-2
+    - ap-south-1
+    - ap-southeast-1
+    - ca-central-1
+    - eu-central-1
+    - eu-west-2
+    - us-west-1
+    s3_bucket: ''
+    template: templates/mongodb-master.template
+  mongodb-3-AZ:
+    parameters:
+      AvailabilityZones: $[alfred_genaz_3]
+      ClusterReplicaSetCount: '3'
+      KeyPairName: $[alfred_getkeypair]
+      MongoDBAdminPassword: T35TMong0
+      NumberOfAZs: '3'
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      RemoteAccessCIDR: 10.0.0.0/16
+    regions:
+    - ap-southeast-2
+    - eu-west-1
+    - us-east-1
+    - us-east-2
+    - us-west-2
+    s3_bucket: ''
+    template: templates/mongodb-master.template
+  mongodb-sa-east-1-2-AZ:
+    parameters:
+      AvailabilityZones: sa-east-1b,sa-east-1c
+      ClusterReplicaSetCount: '3'
+      KeyPairName: $[alfred_getkeypair]
+      MongoDBAdminPassword: T35TMong0
+      NumberOfAZs: '2'
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      RemoteAccessCIDR: 10.0.0.0/16
+    regions:
+    - sa-east-1
+    s3_bucket: ''
+    template: templates/mongodb-master.template
