@@ -321,6 +321,14 @@
                     ]
                 }
             ]
+        },
+        "UsingDefaultBucket": {
+            "Fn::Equals": [
+            {
+                "Ref": "QSS3BucketName"
+            },
+            "aws-quickstart"
+            ]
         }
     },
     "Resources": {
@@ -477,7 +485,7 @@
                                 "cd /home/ec2-user/mongodb \n",
                                 "aws s3 cp s3://",
                                 {
-                                    "Ref": "QSS3BucketName"
+                                    "Fn::If": ["UsingDefaultBucket",  { "Fn::Sub": "${QSS3BucketName}-${AWS::Region}" }, {"Ref": "QSS3BucketName"}]
                                 },
                                 "/",
                                 {
@@ -487,7 +495,7 @@
                                 "chmod +x orchestrator.sh \n",
                                 "aws s3 cp s3://",
                                 {
-                                    "Ref": "QSS3BucketName"
+                                    "Fn::If": ["UsingDefaultBucket",  { "Fn::Sub": "${QSS3BucketName}-${AWS::Region}" }, {"Ref": "QSS3BucketName"}]
                                 },
                                 "/",
                                 {
@@ -498,7 +506,7 @@
                                 "chkconfig --add disable-transparent-hugepages \n",
                                 "aws s3 cp s3://",
                                 {
-                                    "Ref": "QSS3BucketName"
+                                    "Fn::If": ["UsingDefaultBucket",  { "Fn::Sub": "${QSS3BucketName}-${AWS::Region}" }, {"Ref": "QSS3BucketName"}]
                                 },
                                 "/",
                                 {
@@ -507,7 +515,7 @@
                                 "scripts/init_replica.sh init.sh\n",
                                 "aws s3 cp s3://",
                                 {
-                                    "Ref": "QSS3BucketName"
+                                    "Fn::If": ["UsingDefaultBucket",  { "Fn::Sub": "${QSS3BucketName}-${AWS::Region}" }, {"Ref": "QSS3BucketName"}]
                                 },
                                 "/",
                                 {
