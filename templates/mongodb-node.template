@@ -25,7 +25,7 @@
         "NodeInstanceType": {
             "Description": "Amazon EC2 instance type for the MongoDB nodes.",
             "Type": "String",
-            "Default": "m4.large",
+            "Default": "m5.large",
             "AllowedValues": [
                 "m5.large",
                 "m5.xlarge",
@@ -89,7 +89,11 @@
                 "i2.xlarge",
                 "i2.2xlarge",
                 "i2.4xlarge",
-                "i2.8xlarge"
+                "i2.8xlarge",
+                "t3.large",
+                "t3.xlarge",
+                "t3.2xlarge"
+
             ]
         },
         "ImageId": {
@@ -148,8 +152,9 @@
         "MongoDBVersion": {
             "Description": "MongoDB version",
             "Type": "String",
-            "Default": "4.0",
+            "Default": "4.2",
             "AllowedValues": [
+                "4.2",
                 "4.0",
                 "3.6",
                 "3.4",

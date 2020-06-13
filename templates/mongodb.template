@@ -126,8 +126,9 @@
         "MongoDBVersion": {
             "Description": "MongoDB version",
             "Type": "String",
-            "Default": "4.0",
+            "Default": "4.2",
             "AllowedValues": [
+                "4.2",
                 "4.0",
                 "3.6",
                 "3.4",
@@ -202,7 +203,7 @@
         "NodeInstanceType": {
             "Description": "Amazon EC2 instance type for the MongoDB nodes.",
             "Type": "String",
-            "Default": "m4.large",
+            "Default": "m5.large",
             "AllowedValues": [
                 "m5.large",
                 "m5.xlarge",
@@ -266,7 +267,10 @@
                 "i2.xlarge",
                 "i2.2xlarge",
                 "i2.4xlarge",
-                "i2.8xlarge"
+                "i2.8xlarge",
+                "t3.large",
+                "t3.xlarge",
+                "t3.2xlarge"
             ]
         },
         "VPC": {
@@ -315,49 +319,64 @@
     "Mappings": {
         "AWSAMIRegionMap": {
             "AMI": {
-                "AMZNLINUX": "amzn-ami-hvm-2018.03.0.20190611-x86_64-gp2"
+                "AMZNLINUX": "amzn2-ami-hvm-2.0.20200520.1-x86_64-gp2"
             },
             "ap-northeast-1": {
-                "AMZNLINUX": "ami-02ddf94e5edc8e904"
+                "AMZNLINUX": "ami-0a1c2ec61571737db"
             },
             "ap-northeast-2": {
-                "AMZNLINUX": "ami-0ecd78c22823e02ef"
+                "AMZNLINUX": "ami-01af223aa7f274198"
             },
             "ap-south-1": {
-                "AMZNLINUX": "ami-05695932c5299858a"
+                "AMZNLINUX": "ami-0447a12f28fddb066"
             },
             "ap-southeast-1": {
-                "AMZNLINUX": "ami-043afc2b8b6cfba5c"
+                "AMZNLINUX": "ami-0615132a0f36d24f4"
             },
             "ap-southeast-2": {
-                "AMZNLINUX": "ami-01393ce9a3ca55d67"
+                "AMZNLINUX": "ami-088ff0e3bde7b3fdf"
             },
             "ca-central-1": {
-                "AMZNLINUX": "ami-0fa94ecf2fef3420b"
+                "AMZNLINUX": "ami-0f75c2980c6a5851d"
             },
             "eu-central-1": {
-                "AMZNLINUX": "ami-0ba441bdd9e494102"
+                "AMZNLINUX": "ami-0a02ee601d742e89f"
             },
             "eu-west-1": {
-                "AMZNLINUX": "ami-0e61341fa75fcaa18"
+                "AMZNLINUX": "ami-0ea3405d2d2522162"
             },
             "eu-west-2": {
-                "AMZNLINUX": "ami-050b8344d77081f4b"
+                "AMZNLINUX": "ami-07a1f692079eaea2b"
+            },
+            "eu-west-3": {
+                "AMZNLINUX": "ami-01c72e187b357583b"
+            },
+            "eu-north-1": {
+                "AMZNLINUX": "ami-04697c9bb5d6135a2"
+            },
+            "eu-south-1": {
+                "AMZNLINUX": "ami-0f9b9a8cf93d838d0"
+            },
+            "af-south-1": {
+                "AMZNLINUX": "ami-0ec47ddb564d75b64"
             },
             "sa-east-1": {
-                "AMZNLINUX": "ami-05b7dbc290217250d"
+                "AMZNLINUX": "ami-0996184198dc295ec"
             },
             "us-east-1": {
-                "AMZNLINUX": "ami-0e2ff28bfb72a4e45"
+                "AMZNLINUX": "ami-09d95fab7fff3776c"
             },
             "us-east-2": {
-                "AMZNLINUX": "ami-0998bf58313ab53da"
+                "AMZNLINUX": "ami-026dea5602e368e96"
             },
             "us-west-1": {
-                "AMZNLINUX": "ami-021bb9f371690f97a"
+                "AMZNLINUX": "ami-04e59c05167ea7bd5"
+            },
+            "me-south-1": {
+                "AMZNLINUX": "ami-01b31491b74045c0c"
             },
             "us-west-2": {
-                "AMZNLINUX": "ami-079f731edfe27c29c"
+                "AMZNLINUX": "ami-0e34e7b9ca0ace12d"
             }
         }
     },
