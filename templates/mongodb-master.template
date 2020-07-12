@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Deploy MongoDB on a New VPC in AWS",
+    "Description": "Deploy MongoDB on a New VPC in AWS. (qs-1qtlo6bic)",
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
@@ -365,10 +365,11 @@
             ]
         },
         "MongoDBVersion": {
-            "Default": "4.0",
+            "Default": "4.2",
             "Type": "String",
             "Description": "MongoDB version",
             "AllowedValues": [
+                "4.2",
                 "4.0",
                 "3.6",
                 "3.4",

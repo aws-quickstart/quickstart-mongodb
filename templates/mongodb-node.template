@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "This template is used for setting up a single mongodb node",
+    "Description": "This template is used for setting up a single mongodb node. (qs-1qtlo6bij)",
     "Parameters": {
         "VPC": {
             "Type": "AWS::EC2::VPC::Id",
@@ -96,9 +96,9 @@
 
             ]
         },
-        "ImageId": {
-            "Description": "AMI ID for Instance",
-            "Type": "AWS::EC2::Image::Id"
+        "LatestAmazonLinux2Id": {
+            "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+            "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
         },
         "ReplicaNodeNameTag": {
             "Description": "Instance Name",
@@ -401,7 +401,7 @@
                     "Ref": "KeyName"
                 },
                 "ImageId": {
-                    "Ref": "ImageId"
+                    "Ref": "LatestAmazonLinux2Id"
                 },
                 "IamInstanceProfile": {
                     "Ref": "MongoDBNodeIAMProfileID"
