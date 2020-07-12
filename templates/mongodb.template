@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "(000F) Deploy MongoDB Replica Set on AWS (Existing VPC)",
+    "Description": "(000F) Deploy MongoDB Replica Set on AWS (existing VPC). (qs-1qtlo6bf9)",
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
@@ -126,8 +126,9 @@
         "MongoDBVersion": {
             "Description": "MongoDB version",
             "Type": "String",
-            "Default": "4.0",
+            "Default": "4.2",
             "AllowedValues": [
+                "4.2",
                 "4.0",
                 "3.6",
                 "3.4",
@@ -202,7 +203,7 @@
         "NodeInstanceType": {
             "Description": "Amazon EC2 instance type for the MongoDB nodes.",
             "Type": "String",
-            "Default": "m4.large",
+            "Default": "m5.large",
             "AllowedValues": [
                 "m5.large",
                 "m5.xlarge",
@@ -266,7 +267,10 @@
                 "i2.xlarge",
                 "i2.2xlarge",
                 "i2.4xlarge",
-                "i2.8xlarge"
+                "i2.8xlarge",
+                "t3.large",
+                "t3.xlarge",
+                "t3.2xlarge"
             ]
         },
         "VPC": {
@@ -310,55 +314,6 @@
             },
             "aws-quickstart"
             ]
-        }
-    },
-    "Mappings": {
-        "AWSAMIRegionMap": {
-            "AMI": {
-                "AMZNLINUX": "amzn-ami-hvm-2018.03.0.20190611-x86_64-gp2"
-            },
-            "ap-northeast-1": {
-                "AMZNLINUX": "ami-02ddf94e5edc8e904"
-            },
-            "ap-northeast-2": {
-                "AMZNLINUX": "ami-0ecd78c22823e02ef"
-            },
-            "ap-south-1": {
-                "AMZNLINUX": "ami-05695932c5299858a"
-            },
-            "ap-southeast-1": {
-                "AMZNLINUX": "ami-043afc2b8b6cfba5c"
-            },
-            "ap-southeast-2": {
-                "AMZNLINUX": "ami-01393ce9a3ca55d67"
-            },
-            "ca-central-1": {
-                "AMZNLINUX": "ami-0fa94ecf2fef3420b"
-            },
-            "eu-central-1": {
-                "AMZNLINUX": "ami-0ba441bdd9e494102"
-            },
-            "eu-west-1": {
-                "AMZNLINUX": "ami-0e61341fa75fcaa18"
-            },
-            "eu-west-2": {
-                "AMZNLINUX": "ami-050b8344d77081f4b"
-            },
-            "sa-east-1": {
-                "AMZNLINUX": "ami-05b7dbc290217250d"
-            },
-            "us-east-1": {
-                "AMZNLINUX": "ami-0e2ff28bfb72a4e45"
-            },
-            "us-east-2": {
-                "AMZNLINUX": "ami-0998bf58313ab53da"
-            },
-            "us-west-1": {
-                "AMZNLINUX": "ami-021bb9f371690f97a"
-            },
-            "us-west-2": {
-                "AMZNLINUX": "ami-079f731edfe27c29c"
-            }
         }
     },
     "Resources": {
@@ -609,15 +564,6 @@
                     "StackName": {
                         "Ref": "AWS::StackName"
                     },
-                    "ImageId": {
-                        "Fn::FindInMap": [
-                            "AWSAMIRegionMap",
-                            {
-                                "Ref": "AWS::Region"
-                            },
-                            "AMZNLINUX"
-                        ]
-                    },
                     "ReplicaNodeNameTag": "PrimaryReplicaNode0",
                     "NodeReplicaSetIndex": "0",
                     "ReplicaShardIndex": {
@@ -715,15 +661,6 @@
                     },
                     "StackName": {
                         "Ref": "AWS::StackName"
-                    },
-                    "ImageId": {
-                        "Fn::FindInMap": [
-                            "AWSAMIRegionMap",
-                            {
-                                "Ref": "AWS::Region"
-                            },
-                            "AMZNLINUX"
-                        ]
                     },
                     "ReplicaNodeNameTag": "SecondaryReplicaNode0",
                     "NodeReplicaSetIndex": "1",
@@ -823,15 +760,6 @@
                     },
                     "StackName": {
                         "Ref": "AWS::StackName"
-                    },
-                    "ImageId": {
-                        "Fn::FindInMap": [
-                            "AWSAMIRegionMap",
-                            {
-                                "Ref": "AWS::Region"
-                            },
-                            "AMZNLINUX"
-                        ]
                     },
                     "ReplicaNodeNameTag": "SecondaryReplicaNode1",
                     "NodeReplicaSetIndex": "2",

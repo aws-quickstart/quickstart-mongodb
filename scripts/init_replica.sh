@@ -30,25 +30,24 @@ getValue() {
 version=${MongoDBVersion}
 
 if [ -z "$version" ] ; then
-  version="3.6"
+  version="4.2"
 fi
 
 echo "[mongodb-org-${version}]
 name=MongoDB Repository
-baseurl=http://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/${version}/x86_64/
+baseurl=http://repo.mongodb.org/yum/amazon/2/mongodb-org/${version}/x86_64/
 gpgcheck=0
 enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
 
 # To be safe, wait a bit for flush
 sleep 5
 
+amazon-linux-extras install epel
+
 yum --enablerepo=epel install node npm -y
 
-yum install -y mongodb-org
-yum install -y munin-node
-yum install -y libcgroup
-yum -y install mongo-10gen-server mongodb-org-shell
-yum -y install sysstat
+yum install -y mongodb-org mongodb-org-server mongodb-org-shell  mongodb-org-tools
+yum install -y libcgroup libcgroup-tools sysstat munin-node
 
 #################################################################
 #  Figure out what kind of node we are and set some values
@@ -155,12 +154,12 @@ db.createUser(
 );
 EOF
 
-    service mongod stop
+    systemctl  stop mongod 
     ./orchestrator.sh -k -n $DDB_TABLE
     sleep 5
     setup_security_common $DDB_TABLE
     sleep 5
-    service mongod start
+    systemctl  start mongod 
     sleep 10
     ./orchestrator.sh -s "SECURED" -n $DDB_TABLE
 }
@@ -168,12 +167,12 @@ EOF
 #################################################################
 # Setup MongoDB servers and config nodes
 #################################################################
-mkdir /var/run/mongod
-chown mongod:mongod /var/run/mongod
+#mkdir /var/run/mongod
+#chown mongod:mongod /var/run/mongod
 
 echo "net:" > mongod.conf
 echo "  port:" >> mongod.conf
-if [ "$version" == "3.6" ] || [ "$version" == "4.0" ]; then
+if [ "$version" == "3.6" ] || [ "$version" == "4.0" ] || [ "$version" == "4.2" ]; then
     echo "  bindIpAll: true" >> mongod.conf
 fi
 echo "" >> mongod.conf
@@ -189,7 +188,7 @@ echo "    enabled: true" >> mongod.conf
 echo "" >> mongod.conf
 echo "processManagement:" >> mongod.conf
 echo "  fork: true" >> mongod.conf
-echo "  pidFilePath: /var/run/mongod/mongod.pid" >> mongod.conf
+echo "  pidFilePath: /var/run/mongodb/mongod.pid" >> mongod.conf
 
 #################################################################
 #  Enable munin plugins for iostat and iostat_ios
@@ -285,17 +284,17 @@ echo "mount {
 #################################################################
 #  Start cgconfig, munin-node, and all mongod processes
 #################################################################
-chkconfig cgconfig on
-service cgconfig start
+systemctl enable cgconfig
+systemctl start cgconfig
 
-chkconfig munin-node on
-service munin-node start
+systemctl enable munin-node
+systemctl start munin-node
 
-chkconfig mongod on
-if [ "$version" != "3.6" ] && [ "$version" != "4.0" ];  then
+systemctl enable mongod
+if [ "$version" == "3.2" ] || [ "$version" == "3.4" ]; then
     enable_all_listen
 fi
-service mongod start
+systemctl start mongod
 
 #################################################################
 #  Primaries initiate replica sets
@@ -402,9 +401,9 @@ else
     ./orchestrator.sh -w "FINISHED=${NODES}" -n "${SHARD}_${UNIQUE_NAME}"
 
     ./orchestrator.sh -w "SECURED=1" -n "${SHARD}_${UNIQUE_NAME}"
-    service mongod stop
+    systemctl stop mongod
     setup_security_common "${SHARD}_${UNIQUE_NAME}"
-    service mongod start
+    systemctl start mongod
     ./orchestrator.sh -s "SECURED" -n "${SHARD}_${UNIQUE_NAME}"
     rm /tmp/mongo_pass.txt
 
