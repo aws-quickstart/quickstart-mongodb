@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "(000F) Deploy MongoDB Replica Set on AWS (existing VPC). (qs-1qtlo6bf9)",
+    "Description": "Deploy MongoDB Replica Set on AWS (existing VPC). (qs-1qtlo6bf9)",
     "Metadata": {
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [
