@@ -220,7 +220,7 @@
             "Description": "CIDR block for private subnet 1 located in Availability Zone 1."
         },
         "BastionInstanceType": {
-            "Default": "t2.micro",
+            "Default": "t3.micro",
             "Type": "String",
             "Description": "Amazon EC2 instance type for the second bastion instance",
             "AllowedValues": [
@@ -229,6 +229,10 @@
                 "t2.small",
                 "t2.medium",
                 "t2.large",
+                "t3.micro",
+                "t3.small",
+                "t3.medium",
+                "t3.large",
                 "m3.large",
                 "m3.xlarge",
                 "m3.2xlarge",
@@ -281,7 +285,7 @@
             "Type": "String"
         },
         "NodeInstanceType": {
-            "Default": "m4.large",
+            "Default": "m5.large",
             "Type": "String",
             "Description": "Amazon EC2 instance type for the MongoDB nodes.",
             "AllowedValues": [
