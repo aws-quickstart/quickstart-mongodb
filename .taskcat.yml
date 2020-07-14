@@ -57,6 +57,7 @@ tests:
     - us-east-1
     - us-east-2
     - us-west-2
+    - ap-east-1
     s3_bucket: ''
     template: templates/mongodb-master.template
   mongodb-sa-east-1-2-AZ:
