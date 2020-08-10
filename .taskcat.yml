@@ -40,7 +40,7 @@ tests:
     - eu-west-2
     - us-west-1
     s3_bucket: ''
-    template: templates/mongodb-master.template
+    template: templates/mongodb-new-vpc.template.yaml
   mongodb-3-AZ:
     parameters:
       AvailabilityZones: $[alfred_genaz_3]
@@ -59,7 +59,7 @@ tests:
     - us-west-2
     - ap-east-1
     s3_bucket: ''
-    template: templates/mongodb-master.template
+    template: templates/mongodb-new-vpc.template.yaml
   mongodb-sa-east-1-2-AZ:
     parameters:
       AvailabilityZones: sa-east-1b,sa-east-1c
@@ -73,4 +73,4 @@ tests:
     regions:
     - sa-east-1
     s3_bucket: ''
-    template: templates/mongodb-master.template
+    template: templates/mongodb-new-vpc.template.yaml
