@@ -20,7 +20,7 @@
     "ParameterValue": "$[alfred_genaz_3]"
   },
   {
-    "ParameterValue": "T35TMong0",
+    "ParameterValue": "$[taskcat_genpass_10A]",
     "ParameterKey": "MongoDBAdminPassword"
   },
   {

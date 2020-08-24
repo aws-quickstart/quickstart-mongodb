@@ -24,7 +24,7 @@ tests:
       AvailabilityZones: $[alfred_genaz_2]
       ClusterReplicaSetCount: '3'
       KeyPairName: $[alfred_getkeypair]
-      MongoDBAdminPassword: T35TMong0
+      MongoDBAdminPassword: $[taskcat_genpass_10A]
       NodeInstanceType: m5.large
       NumberOfAZs: '2'
       QSS3BucketName: $[taskcat_autobucket]
@@ -46,7 +46,7 @@ tests:
       AvailabilityZones: $[alfred_genaz_3]
       ClusterReplicaSetCount: '3'
       KeyPairName: $[alfred_getkeypair]
-      MongoDBAdminPassword: T35TMong0
+      MongoDBAdminPassword: $[taskcat_genpass_10A]
       NumberOfAZs: '3'
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
@@ -65,7 +65,7 @@ tests:
       AvailabilityZones: sa-east-1b,sa-east-1c
       ClusterReplicaSetCount: '3'
       KeyPairName: $[alfred_getkeypair]
-      MongoDBAdminPassword: T35TMong0
+      MongoDBAdminPassword: $[taskcat_genpass_10A]
       NumberOfAZs: '2'
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]

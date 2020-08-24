@@ -20,7 +20,7 @@
     "ParameterValue": "sa-east-1b,sa-east-1c"
   },
   {
-    "ParameterValue": "T35TMong0",
+    "ParameterValue": "$[taskcat_genpass_10A]",
     "ParameterKey": "MongoDBAdminPassword"
   },
   {
