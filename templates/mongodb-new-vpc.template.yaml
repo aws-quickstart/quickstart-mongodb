@@ -311,7 +311,6 @@ Parameters:
       - '4.0'
       - '3.6'
       - '3.4'
-      - '3.2'
   MongoDBAdminUsername:
     Default: admin
     NoEcho: 'true'
