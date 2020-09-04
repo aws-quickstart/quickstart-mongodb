@@ -33,11 +33,20 @@ if [ -z "$version" ] ; then
   version="4.2"
 fi
 
+if [ "$version" == "4.0" ] || [ "$version" == "4.2" ];
+then
 echo "[mongodb-org-${version}]
 name=MongoDB Repository
 baseurl=http://repo.mongodb.org/yum/amazon/2/mongodb-org/${version}/x86_64/
 gpgcheck=0
 enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
+else
+echo "[mongodb-org-${version}]
+name=MongoDB Repository
+baseurl=http://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/${version}/x86_64/
+gpgcheck=0
+enabled=1" > /etc/yum.repos.d/mongodb-org-${version}.repo
+fi
 
 # To be safe, wait a bit for flush
 sleep 5
@@ -46,7 +55,8 @@ amazon-linux-extras install epel
 
 yum --enablerepo=epel install node npm -y
 
-yum install -y mongodb-org mongodb-org-server mongodb-org-shell  mongodb-org-tools
+yum install -y mongodb-org mongodb-org-server mongodb-org-shell mongodb-org-tools
+yum install -y mongo-10gen-server
 yum install -y libcgroup libcgroup-tools sysstat munin-node
 
 #################################################################
@@ -256,15 +266,7 @@ echo "  replSetName: ${SHARD}" >> /etc/mongod.conf
 
 echo CGROUP_DAEMON="memory:mongod" > /etc/sysconfig/mongod
 
-echo "mount {
-    cpuset  = /cgroup/cpuset;
-    cpu     = /cgroup/cpu;
-    cpuacct = /cgroup/cpuacct;
-    memory  = /cgroup/memory;
-    devices = /cgroup/devices;
-  }
-
-  group mongod {
+echo "group mongod {
     perm {
       admin {
         uid = mongod;

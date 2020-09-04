@@ -1,6 +1,7 @@
 project:
   name: quickstart-mongodb
   owner: quickstart-eng@amazon.com
+  shorten_stack_name: true
   package_lambda: false
   regions:
   - ap-northeast-1
