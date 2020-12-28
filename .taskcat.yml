@@ -40,6 +40,8 @@ tests:
     - eu-central-1
     - eu-west-2
     - us-west-1
+    - us-gov-east-1
+    - us-gov-west-1
     s3_bucket: ''
     template: templates/mongodb-new-vpc.template.yaml
   mongodb-3-AZ:

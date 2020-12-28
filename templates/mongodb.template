@@ -298,14 +298,6 @@
                 "3"
             ]
         },
-        "GovCloudCondition": {
-            "Fn::Equals": [
-                {
-                    "Ref": "AWS::Region"
-                },
-                "us-gov-west-1"
-            ]
-        },
         "UsingDefaultBucket": {
             "Fn::Equals": [
             {
@@ -467,7 +459,7 @@
                                     ],
                                     "Resource": [
                                         {
-                                            "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*MONGODB_*"
+                                            "Fn::Sub": "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*MONGODB_*"
                                         }
                                     ]
                                 }
