@@ -344,7 +344,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Threshold: 0.0
       AlarmActions:
-        - !Sub 'arn:aws:automate:${AWS::Region}:ec2:recover'
+        - !Sub 'arn:${AWS::Partition}:automate:${AWS::Region}:ec2:recover'
       Dimensions:
         - Name: InstanceId
           Value: !Ref 'ReplicaNodeInstance'

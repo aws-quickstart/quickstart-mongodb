@@ -345,7 +345,7 @@ Resources:
                   - dynamodb:UpdateItem
                   - dynamodb:UpdateTable
                 Resource:
-                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*MONGODB_*'
+                  - !Sub 'arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*MONGODB_*'
   MongoDBNodeIAMProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
