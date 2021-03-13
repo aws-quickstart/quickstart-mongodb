@@ -1,0 +1,11 @@
+region: us-east-1
+version: 2020-01-01
+cloudformation_resources:
+  - name: qs-mongodb-2az-1
+    template_file: s3://aws-quickstart/quickstart-mongodb/templates/mongodb-master.template
+    parameter_file: parameters/parameters.json
+    deploy_method: stack_set
+    deploy_to_ou:
+      - Workloads
+    regions:
+      - us-east-1
