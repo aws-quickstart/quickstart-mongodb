@@ -1,0 +1,31 @@
+---
+region: us-east-1
+version: 2021-03-15
+resources:
+  - name: qs-mongodb-2az-1
+    resource_file: s3://aws-quickstart/quickstart-mongodb/templates/mongodb-master.template
+    parameters: 
+    - parameter_key: AvailabilityZones
+      parameter_value: us-east-1a, us-east-1b
+    - parameter_key: ClusterReplicaSetCount
+      parameter_value: "3"
+    - parameter_key: KeyPairName
+      parameter_value: aws-qs-tc-all
+    - parameter_key: MongoDBAdminPassword
+      parameter_value: _get_ssm_secure_string_/qs/genericpw/12ANS
+    - parameter_key: NodeInstanceType
+      parameter_value: m5.large
+    - parameter_key: NumberOfAZs
+      parameter_value: "2"
+    - parameter_key: QSS3BucketName
+      parameter_value: aws-quickstart
+    - parameter_key: QSS3BucketRegion
+      parameter_value: us-east-1
+    - parameter_key: RemoteAccessCIDR
+      parameter_value: 10.0.0.0/16
+    deploy_method: stack_set
+    deployment_targets:
+      organizational_units:
+        - Workloads
+    regions:
+      - us-east-1
