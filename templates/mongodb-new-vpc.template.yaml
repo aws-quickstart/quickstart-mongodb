@@ -376,7 +376,6 @@ Resources:
           Fn::Join:
             - ','
             - !Ref 'AvailabilityZones'
-        KeyPairName: !Ref 'KeyPairName'
         NumberOfAZs: !Ref 'NumberOfAZs'
         PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1CIDR'
         PrivateSubnet2ACIDR: !Ref 'PrivateSubnet2CIDR'

@@ -453,7 +453,7 @@
             "Properties": {
                 "TemplateURL": {
                     "Fn::Sub": [
-                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template",
+                        "https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml",
                         {
                             "S3Region": {
                                 "Fn::If": ["UsingDefaultBucket",  { "Ref" : "AWS::Region" }, {"Ref": "QSS3BucketRegion"}]
@@ -472,9 +472,6 @@
                                 "Ref": "AvailabilityZones"
                             }
                         ]
-                    },
-                    "KeyPairName": {
-                        "Ref": "KeyPairName"
                     },
                     "NumberOfAZs": {
                         "Ref": "NumberOfAZs"
