@@ -21,46 +21,31 @@ For architectural details, best practices, step-by-step instructions, and custom
 To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo.
 If you'd like to submit code for this Quick Start, please review the [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/). 
 
-## Deploying with Control Tower
-This QuickStart can be deployed in a Control Tower environment. To accomplish this, we make use of [Customizations for AWS Control Tower](https://aws.amazon.com/solutions/implementations/customizations-for-aws-control-tower/?did=sl_card&trk=sl_card) solution. A folder labeled "ct" has been provided in the repository for this Quick Start to aid in the deployment.
+## Deploy with Control Tower
+You can deploy MongoDB in a customized AWS Control Tower environment to help you set up a secure, multi-account AWS environment using AWS best practices. For details, see [Customizations for AWS Control Tower](https://aws.amazon.com/solutions/implementations/customizations-for-aws-control-tower/). 
 
-After the [Customization for AWS Control Tower](https://aws.amazon.com/solutions/implementations/customizations-for-aws-control-tower/?did=sl_card&trk=sl_card) solution has been deployed, use the contents of the "ct" folder (located in the root of the GitHub repositoy) to customize your deployment.
-```
-└── ct
-   ├── custom-control-tower-configuration
-   │   └── manifest.yaml
-   └── custom-control-tower-configuration.zip
-```
-The manifest.yaml file has been customized for this Quick Start. 
+The root directory of the MongoDB Quick Start repo includes a `ct` folder with a `manifest.yaml` file to assist you with the AWS Control Tower deployment. This file has been customized for the MongoDB Quick Start. 
 
-### Review the manifest file.
+In the following sections, you will review and update the settings in this file and then upload it to the S3 bucket that is used for the deployment.
 
-Open and review the *manifest.yaml* file
+### Review the manifest.yaml file
 
-**region:** Ensure the _region_ attribute references the region where the Customization for AWS Control Tower has been deployed. (The default region is "us-east-1")
+1. Navigate to the root directory of the MongoDB Quick Start, and open the `manifest.yaml` file, located in the `ct` folder.
+2. Confirm that the `region` attribute references the Region where AWS Control Tower is deployed. The default Region is us-east-1. You will update the `regions` attribute (located in the *resources* section) in a later step. 
+3. Confirm that the `resource_file` attribute points to the public S3 bucket for the MongoDB Quick Start. Using a public S3 bucket ensures a consistent code base across the different deployment options. 
 
-NOTE: There is a second _region_ attribute located under the _resources_ section, that attribute is used to define the region where the Quick Start will be deployed. 
+If you prefer to deploy from your own S3 bucket, update the path as needed.
 
-#### Review the _resources_ section
-**resource_file:** The _resource_file_ attribute points to the public S3 bucket for this Quick Start, if you are deploying from your own s3 bucket, update this reference appropriately.
+4. Review each of the `parameters` attributes and update them as needed to match the requirements of your deployment. 
+5. Confirm that the `deployment_targets` attribute is configured for either your target accounts or organizational units (OUs). 
+6. For the `regions` attribute, add the Region where you plan to deploy the MongoDB Quick Start. The default Region is us-east-1.
 
-NOTE: There are other methods for deploying this QuickStart using Customization for AWS Control Tower, we have chosen to make use of the public s3 repository to ensure a consistent code base across the different deployment options. Visit the [Customizations for AWS Control Tower](https://aws.amazon.com/solutions/implementations/customizations-for-aws-control-tower/?did=sl_card&trk=sl_card) solution page for additional information.
+### Upload the manifest.yaml file
+1. Compress the `manifest.yaml` file and name it `custom-control-tower-configuration.zip`.
+2. Upload the `custom-control-tower-configuration.zip` file to the S3 bucket that was created for the AWS Control Tower deployment (`custom-control-tower-configuration-<accountnumber>-<region>`).
 
-**parameters:** Update The _parameters_ attribute to suit your deployment. 
-
-NOTE: Carefuly review and update these attributes, to ensure the deployment is successful.
-
-**deployment_targets:** Ensure your _deployment_targets_ is configured for either your target account(s) or target OU(s)
-
-**region:** Enter the _region_ where you wish to deploy the Quick Start. (The default region is "us-east-1")
-
-### Upload the manifest file
-Compress the "manifest.yaml" file and name it *custom-control-tower-configuration.zip*
-Upload the *custom-control-tower-configuration.zip* to the s3 bucket that was created by the Customization for AWS Control Tower solution. (custom-control-tower-configuration-_accountnumber_-_region_)
-The file upload will trigger the customized pipeline that will deploy the Quick Start to your target accounts.
-
-Visit the [Customizations for AWS Control Tower](https://aws.amazon.com/solutions/implementations/customizations-for-aws-control-tower/?did=sl_card&trk=sl_card) solution page for additional information.
-
+The file upload initiates the customized pipeline that deploys the Quick Start to your target accounts.
 
 To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo.
 If you'd like to submit code for this Quick Start, please review the [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/).
+
