@@ -95,6 +95,9 @@ Parameters:
   ReplicaNodeNameTag:
     Description: Instance Name
     Type: String
+  ReplicaNodeInitialTypeTag:
+    Description: Initial Node Type
+    Type: String
   NodeReplicaSetIndex:
     Description: Instance Index
     Type: String
@@ -267,6 +270,8 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref 'ReplicaNodeNameTag'
+        - Key: InitialNodeType
+          Value: !Ref 'ReplicaNodeInitialTypeTag'
         - Key: ClusterReplicaSetCount
           Value: !Ref 'ClusterReplicaSetCount'
         - Key: NodeReplicaSetIndex
@@ -358,3 +363,6 @@ Outputs:
   NodeNameTag:
     Description: Node Name Tag
     Value: !Ref 'ReplicaNodeNameTag'
+  InitialNodeTypeTag:
+    Description: Initial Node Type Tag
+    Value: !Ref 'ReplicaNodeInitialTypeTag'

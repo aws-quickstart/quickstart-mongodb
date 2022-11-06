@@ -385,6 +385,7 @@ Resources:
         VolumeType: !Ref 'VolumeType'
         StackName: !Ref 'AWS::StackName'
         ReplicaNodeNameTag: PrimaryReplicaNode0
+        ReplicaNodeInitialTypeTag: Primary
         NodeReplicaSetIndex: '0'
         ReplicaShardIndex: !Ref 'ReplicaShardIndex'
         ReplicaNodeWaitForNodeInstallWaitHandle: !Ref 'PrimaryReplicaNode0WaitForNodeInstallWaitHandle'
@@ -432,6 +433,7 @@ Resources:
         VolumeType: !Ref 'VolumeType'
         StackName: !Ref 'AWS::StackName'
         ReplicaNodeNameTag: SecondaryReplicaNode0
+        ReplicaNodeInitialTypeTag: Secondary
         NodeReplicaSetIndex: '1'
         ReplicaShardIndex: !Ref 'ReplicaShardIndex'
         ReplicaNodeWaitForNodeInstallWaitHandle: !Ref 'SecondaryReplicaNode0WaitForNodeInstallWaitHandle'
@@ -480,6 +482,7 @@ Resources:
         VolumeType: !Ref 'VolumeType'
         StackName: !Ref 'AWS::StackName'
         ReplicaNodeNameTag: SecondaryReplicaNode1
+        ReplicaNodeInitialTypeTag: Secondary
         NodeReplicaSetIndex: '2'
         ReplicaShardIndex: !Ref 'ReplicaShardIndex'
         ReplicaNodeWaitForNodeInstallWaitHandle: !Ref 'SecondaryReplicaNode1WaitForNodeInstallWaitHandle'

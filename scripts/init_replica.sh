@@ -62,7 +62,7 @@ yum install -y libcgroup libcgroup-tools sysstat munin-node
 #################################################################
 #  Figure out what kind of node we are and set some values
 #################################################################
-NODE_TYPE=`getValue Name`
+NODE_TYPE=`getValue InitialNodeType`
 IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 SHARD=s`getValue ReplicaShardIndex`
 NODES=`getValue ClusterReplicaSetCount`

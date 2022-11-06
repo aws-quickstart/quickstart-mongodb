@@ -104,6 +104,10 @@
             "Description": "Instance Name",
             "Type": "String"
         },
+        "ReplicaNodeInitialTypeTag": {
+            "Description": "Initial Node Type",
+            "Type": "String"
+        },
         "NodeReplicaSetIndex": {
             "Description": "Instance Index",
             "Type": "String"
@@ -413,6 +417,12 @@
                         }
                     },
                     {
+                        "Key": "InitialNodeType",
+                        "Value": {
+                            "Ref": "ReplicaNodeInitialTypeTag"
+                        }
+                    },
+                    {
                         "Key": "ClusterReplicaSetCount",
                         "Value": {
                             "Ref": "ClusterReplicaSetCount"
@@ -700,6 +710,10 @@
         "NodeNameTag": {
             "Description": "Node Name Tag",
             "Value" : { "Ref": "ReplicaNodeNameTag"}
+        },
+        "NodeInitialTypeTag": {
+            "Description": "Initial Node Type Tag",
+            "Value" : { "Ref": "ReplicaNodeInitialTypeTag"}
         }
     }
 }
